@@ -78,9 +78,9 @@ INIT:
 
 	;USART1
 	;Set baudrate at 2400bps
-	ldi mpr, $16
+	ldi mpr, $A0 ;$16 - idk where these came from
 	sts UBRR1L, mpr
-	ldi mpr, $92
+	ldi mpr, $01 ;$92 - idk where these came from
 	sts UBRR1H, mpr
 
 	;Enable transmitter
