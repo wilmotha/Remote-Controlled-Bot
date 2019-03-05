@@ -19,6 +19,8 @@
 ;*	Internal Register Definitions and Constants
 ;***********************************************************
 .def	mpr = r16				; Multi-Purpose Register
+.def	address = r17
+.def	transfer = r18
 
 .equ	EngEnR = 4				; Right Engine Enable Bit
 .equ	EngEnL = 7				; Left Engine Enable Bit
@@ -43,6 +45,18 @@
 ;***********************************************************
 .org	$0000					; Beginning of IVs
 		rjmp 	INIT			; Reset interrupt
+.org	$0002
+		rjmp	MoveForward
+.org	$0004
+		rjmp	MoveBackward
+.org	$0006
+		rjmp	TurnRight
+.org	$000A
+		rjmp	TurnLeft
+.org	$000C
+		rjmp	Halt_Sub
+.org	$000E
+		rjmp	Freeze
 
 .org	$0046					; End of Interrupt Vectors
 
@@ -59,33 +73,124 @@ INIT:
 	;I/O Ports
 	ldi mpr, (1<<PD3)
 	out DDRD, mpr
+	ldi address, $2A;0b01010101
 
-	
 
 	;USART1
-		;Set baudrate at 2400bps
-		ldi mpr, $16
-		out UBRR1L, mpr
-		ldi mpr, $92
-		out UBRR1H, mpr
-		;Enable transmitter
-		ldi mpr, $08
-		out UCSR1B, mpr
-		;Set frame format: 8 data bits, 2 stop bits
-		ldi mpr, 0b0001110
-		out UCSR1C, mpr
+	;Set baudrate at 2400bps
+	ldi mpr, $16
+	sts UBRR1L, mpr
+	ldi mpr, $92
+	sts UBRR1H, mpr
+
+	;Enable transmitter
+	ldi mpr, $00
+	sts UCSR1A, mpr
+
+	ldi mpr, $08
+	sts UCSR1B, mpr
+	
+	;Set frame format: 8 data bits, 2 stop bits
+	ldi mpr, 0b0001110
+	sts UCSR1C, mpr
+
+	;Buttons Interupts
+	clr mpr
+	ldi mpr, 0b00101010
+	sts EICRA, mpr
+	ldi mpr, 0b00101010
+	out EICRB, mpr
+
+	ldi mpr, 0b00110111
+	out EIMSK, mpr
+
+	sei
 	;Other
 
 ;***********************************************************
 ;*	Main Program
 ;***********************************************************
 MAIN:
+		
 	;TODO: ???
-		rjmp	MAIN
+	rjmp	MAIN
 
 ;***********************************************************
 ;*	Functions and Subroutines
 ;***********************************************************
+MoveForward:
+	
+	ldi transfer, MovFwd
+	
+	rcall Transmit
+
+	ldi mpr, $FF
+	out EIFR, mpr
+	reti
+
+MoveBackward:
+
+	ldi transfer, MovBck
+	
+	rcall Transmit
+
+	ldi mpr, $FF
+	out EIFR, mpr
+	reti
+
+TurnRight:
+
+	ldi transfer, TurnR
+	
+	rcall Transmit
+
+	ldi mpr, $FF
+	out EIFR, mpr
+	reti
+
+TurnLeft:
+	ldi transfer, TurnL
+	
+	rcall Transmit
+
+	ldi mpr, $FF
+	out EIFR, mpr
+	reti
+
+Halt_Sub:
+	ldi transfer, Halt
+	
+	rcall Transmit
+
+	ldi mpr, $FF
+	out EIFR, mpr
+	reti
+
+Freeze:
+
+	reti
+
+Transmit:
+	LDS mpr, UCSR1A
+	SBRS mpr, UDRE1
+	rjmp Transmit
+	STS UDR1, address
+	
+	LDS mpr, UCSR1A
+	cbr mpr, TXC1
+	sts UCSR1A, mpr
+
+Loop:
+	LDS mpr, UCSR1A
+	SBRS mpr, UDRE1
+	rjmp Loop
+	STS UDR1, transfer
+
+	LDS mpr, UCSR1A
+	cbr mpr, TXC1
+	sts UCSR1A, mpr
+
+	ret
 
 ;***********************************************************
 ;*	Stored Program Data
