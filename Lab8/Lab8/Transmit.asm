@@ -73,6 +73,10 @@ INIT:
 	;I/O Ports
 	ldi mpr, (1<<PD3)
 	out DDRD, mpr
+
+	ldi mpr, $F7
+	out PORTD, mpr
+
 	ldi address, $2A;0b01010101
 
 

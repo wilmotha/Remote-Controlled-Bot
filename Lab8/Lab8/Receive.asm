@@ -78,9 +78,16 @@ INIT:
 	out spl, mpr
 
 	;I/O Ports
-	ldi mpr, (1<<PD0)|(1<<PD1)|(0<<PD2)
+	ldi mpr, (0<<PD0)|(0<<PD1)|(0<<PD2)
 	out DDRD, mpr
+
+	ldi mpr, $03
+	out PORTD, mpr
+
+	ldi mpr, $FF
+	out DDRB, mpr
 	
+
 	;USART1
 		;Set baudrate at 2400bps
 	ldi mpr, $A0
@@ -115,40 +122,60 @@ MAIN:
 	ld mpr, Y
 	cpi mpr, BotAddress
 	brne Main
-
+	rcall ResetX
 	ldd mpr, Y+1
 	
 	cpi mpr, MovFwdC
 	brne Bck
-	rcall 
+	rcall MoveForward
 Bck:
-	cpi mpr, MovFwdC
+	cpi mpr, MovBckC
 	brne TrnR
-	rcall
+	rcall MoveBackward
+
 TrnR:
+	cpi mpr, TurnRC
+	brne TrnL
+	rcall TurnRight
+
+TrnL:
+	cpi mpr, TurnLC
+	brne Hlt
+	rcall TurnLeft
+
+Hlt:
+	cpi mpr, HaltC
+	brne Main
+	rcall Halt_Sub
+
 	rjmp	MAIN
 
 ;***********************************************************
 ;*	Functions and Subroutines
 ;***********************************************************
 MoveForward:
-	
+	ldi mpr, MovFwd
+	out PORTB, mpr
 	ret
 
 MoveBackward:
-
+	ldi mpr, MovBck
+	out PORTB, mpr
 	ret
 
 TurnRight:
-
+	ldi mpr, TurnR
+	out PORTB, mpr
 	ret
 
 TurnLeft:
-	
+	ldi mpr, TurnL
+	out PORTB, mpr
 	ret
 
 Halt_Sub:
-	
+	ldi mpr, Halt
+	out PORTB, mpr
 	ret
 
 Freeze:
@@ -175,6 +202,10 @@ Receive:
 	pop mpr
 	reti
 	
+ResetX:
+	ldi XL, low(BUFFER)
+	ldi XH, high(BUFFER)
+	ret
 ;***********************************************************
 ;*	Stored Program Data
 ;***********************************************************
