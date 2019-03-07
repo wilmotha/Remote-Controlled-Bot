@@ -91,7 +91,7 @@ INIT:
 	sts UCSR1B, mpr
 	
 	;Set frame format: 8 data bits, 2 stop bits
-	ldi mpr, 0b0001110
+	ldi mpr, 0b00001110
 	sts UCSR1C, mpr
 
 	;Buttons Interupts

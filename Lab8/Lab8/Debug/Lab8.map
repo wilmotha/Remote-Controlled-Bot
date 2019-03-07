@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Transmit.asm Mon Mar 04 17:52:56 2019
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Wed Mar 06 19:35:32 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -868,24 +868,27 @@ EQU  TWIaddr      00000042
 EQU  SPMRaddr     00000044
 EQU  INT_VECTORS_SIZE 00000046
 DEF  mpr          r16
-DEF  address      r17
-DEF  transfer     r18
+EQU  WskrR        00000000
+EQU  WskrL        00000001
 EQU  EngEnR       00000004
 EQU  EngEnL       00000007
 EQU  EngDirR      00000005
 EQU  EngDirL      00000006
-EQU  MovFwd       000000b0
-EQU  MovBck       00000080
-EQU  TurnR        000000a0
-EQU  TurnL        00000090
-EQU  Halt         000000c8
-CSEG INIT         00000046
-CSEG MoveForward  00000066
-CSEG MoveBackward 0000006b
-CSEG TurnRight    00000070
-CSEG TurnLeft     00000075
-CSEG Halt_Sub     0000007a
-CSEG Freeze       0000007f
-CSEG MAIN         00000065
-CSEG Transmit     00000080
-CSEG Loop         0000008b
+EQU  BotAddress   00000055
+EQU  MovFwd       00000060
+EQU  MovBck       00000000
+EQU  TurnR        00000040
+EQU  TurnL        00000020
+EQU  Halt         00000090
+CSEG INIT         00000047
+CSEG LeftBump     00000066
+CSEG RightBump    00000065
+CSEG Receive      00000067
+DSEG BUFFER       00000100
+CSEG MAIN         0000005e
+CSEG MoveForward  0000005f
+CSEG MoveBackward 00000060
+CSEG TurnRight    00000061
+CSEG TurnLeft     00000062
+CSEG Halt_Sub     00000063
+CSEG Freeze       00000064
