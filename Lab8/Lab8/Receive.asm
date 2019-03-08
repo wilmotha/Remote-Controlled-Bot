@@ -86,14 +86,23 @@ INIT:
 
 	ldi mpr, $FF
 	out DDRB, mpr
+
+	ldi mpr, $00
+	out PortB, mpr
 	
 
 	;USART1
 		;Set baudrate at 2400bps
-	ldi mpr, $A0
-	sts UBRR1L, mpr
-	ldi mpr, $01
+	
+	ldi mpr, high(832)
 	sts UBRR1H, mpr
+	ldi mpr, low(832)
+	sts UBRR1L, mpr
+	
+	;ldi mpr, $A0
+	;sts UBRR1L, mpr
+	;ldi mpr, $01
+	;sts UBRR1H, mpr
 		;Enable receiver and enable receive interrupts
 	ldi mpr, 0b10010000
 	sts UCSR1C, mpr

@@ -1,10 +1,10 @@
 
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Wed Mar 06 20:12:39 2019
+AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm Thu Mar 07 15:38:03 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
-C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
+C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
-C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
+C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
                                  
                                  ;***********************************************************
                                  
@@ -1226,11 +1226,11 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  ; ***** END OF FILE ******************************************************
                                  
                                  ;*
-                                 ;*	Receive
+                                 ;*  Transmit
                                  ;*
                                  ;*	Enter the description of the program here
                                  ;*
-                                 ;*	This is the RECEIVE skeleton file for Lab 8 of ECE 375
+                                 ;*	This is the TRANSMIT skeleton file for Lab 8 of ECE 375
                                  ;*
                                  ;***********************************************************
                                  ;*
@@ -1288,30 +1288,21 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  ;*	Internal Register Definitions and Constants
                                  ;***********************************************************
                                  .def	mpr = r16				; Multi-Purpose Register
+                                 .def	address = r17
+                                 .def	transfer = r18
                                  
-                                 .equ	WskrR = 0				; Right Whisker Input Bit
-                                 .equ	WskrL = 1				; Left Whisker Input Bit
                                  .equ	EngEnR = 4				; Right Engine Enable Bit
                                  .equ	EngEnL = 7				; Left Engine Enable Bit
                                  .equ	EngDirR = 5				; Right Engine Direction Bit
                                  .equ	EngDirL = 6				; Left Engine Direction Bit
-                                 
-                                 .equ	BotAddress = 0b01010101;(Enter your robot's address here (8 bits))
-                                 
-                                 ;/////////////////////////////////////////////////////////////
-                                 ;These macros are the values to make the TekBot Move.
-                                 ;/////////////////////////////////////////////////////////////
-                                 .equ	MovFwd =  (1<<EngDirR|1<<EngDirL)	;0b01100000 Move Forward Action Code
-                                 .equ	MovBck =  $00						;0b00000000 Move Backward Action Code
-                                 .equ	TurnR =   (1<<EngDirL)				;0b01000000 Turn Right Action Code
-                                 .equ	TurnL =   (1<<EngDirR)				;0b00100000 Turn Left Action Code
-                                 .equ	Halt =    (1<<EngEnR|1<<EngEnL)		;0b10010000 Halt Action Code
-                                 
-                                 .equ	MovFwdC =  ($80|1<<(EngDirR-1)|1<<(EngDirL-1))	;0b10110000 Move Forward Action Code
-                                 .equ	MovBckC =  ($80|$00)								;0b10000000 Move Backward Action Code
-                                 .equ	TurnRC =   ($80|1<<(EngDirL-1))					;0b10100000 Turn Right Action Code
-                                 .equ	TurnLC =   ($80|1<<(EngDirR-1))					;0b10010000 Turn Left Action Code
-                                 .equ	HaltC =    ($80|1<<(EngEnR-1)|1<<(EngEnL-1))		;0b11001000 Halt Action Code
+                                 ; Use these action codes between the remote and robot
+                                 ; MSB = 1 thus:
+                                 ; control signals are shifted right by one and ORed with 0b10000000 = $80
+                                 .equ	MovFwd =  ($80|1<<(EngDirR-1)|1<<(EngDirL-1))	;0b10110000 Move Forward Action Code
+                                 .equ	MovBck =  ($80|$00)								;0b10000000 Move Backward Action Code
+                                 .equ	TurnR =   ($80|1<<(EngDirL-1))					;0b10100000 Turn Right Action Code
+                                 .equ	TurnL =   ($80|1<<(EngDirR-1))					;0b10010000 Turn Left Action Code
+                                 .equ	Halt =    ($80|1<<(EngEnR-1)|1<<(EngEnL-1))		;0b11001000 Halt Action Code
                                  
                                  ;***********************************************************
                                  ;*	Start of Code Segment
@@ -1322,170 +1313,207 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  ;*	Interrupt Vectors
                                  ;***********************************************************
                                  .org	$0000					; Beginning of IVs
-000000 c046                      		rjmp 	INIT			; Reset interrupt
-                                 
-                                 ;Should have Interrupt vectors for:
-                                 ;- Left whisker
+000000 c045                      		rjmp 	INIT			; Reset interrupt
                                  .org	$0002
-000002 c087                      		rjmp	LeftBump
-                                 ;- Right whisker
+000002 c067                      		rjmp	MoveForward
                                  .org	$0004
-000004 c084                      		rjmp	RightBump
-                                 ;- USART receive
-                                 .org	$003C
-                                 		; some subroutine?
+000004 c06a                      		rjmp	MoveBackward
+                                 .org	$000A
+00000a c069                      		rjmp	TurnRight
+                                 .org	$000C
+00000c c06c                      		rjmp	TurnLeft
+                                 .org	$000E
+00000e c06f                      		rjmp	Halt_Sub
+                                 .org	$0010
+000010 c072                      		rjmp	Freeze
+                                 
                                  .org	$0046					; End of Interrupt Vectors
-000046 c044                      		rjmp	Receive
+                                 
                                  ;***********************************************************
                                  ;*	Program Initialization
                                  ;***********************************************************
                                  INIT:
                                  	;Stack Pointer (VERY IMPORTANT!!!!)
-000047 e100                      	ldi mpr, high(RAMEND)
-000048 bf0e                      	out sph, mpr
-000049 ef0f                      	ldi mpr, low(RAMEND)
-00004a bf0d                      	out spl, mpr
+000046 e100                      	ldi mpr, high(RAMEND)
+000047 bf0e                      	out sph, mpr
+000048 ef0f                      	ldi mpr, low(RAMEND)
+000049 bf0d                      	out spl, mpr
                                  
                                  	;I/O Ports
-00004b e000                      	ldi mpr, (0<<PD0)|(0<<PD1)|(0<<PD2)
-00004c bb01                      	out DDRD, mpr
+                                 	;ldi mpr, (1<<PD3)
+                                 	;out DDRD, mpr
                                  
-00004d e003                      	ldi mpr, $03
-00004e bb02                      	out PORTD, mpr
+                                 	;ldi mpr, $F7
+                                 	;out PORTD, mpr
                                  
-00004f ef0f                      	ldi mpr, $FF
-000050 bb07                      	out DDRB, mpr
-                                 	
+00004a ef0f                      	ldi mpr, $FF
+00004b bb07                      	out DDRB, mpr
+                                 
+00004c e000                      	ldi mpr, $00
+00004d bb01                      	out DDRD, mpr
+                                 
+00004e ef0f                      	ldi mpr, $FF
+00004f bb02                      	out PortD, mpr
+                                 
+000050 e41d                      	ldi address, $4D;0b01010101
+                                 
                                  
                                  	;USART1
-                                 		;Set baudrate at 2400bps
-000051 ea00                      	ldi mpr, $A0
-000052 9300 0099                 	sts UBRR1L, mpr
-000054 e001                      	ldi mpr, $01
-000055 9300 0098                 	sts UBRR1H, mpr
-                                 		;Enable receiver and enable receive interrupts
-000057 e900                      	ldi mpr, 0b10010000
-000058 9300 009d                 	sts UCSR1C, mpr
-                                 		;Set frame format: 8 data bits, 2 stop bits
-00005a e00e                      	ldi mpr, 0b00001110
+                                 	;Set baudrate at 2400bps
                                  	
-                                 	;External Interrupts
-                                 		;Set the External Interrupt Mask
-00005b e003                      	ldi mpr, 0b00000011
-00005c bf09                      	out EIMSK, mpr
-                                 		;Set the Interrupt Sense Control to falling edge detection
-00005d e00a                      	ldi mpr, 0b00001010
-00005e 9300 006a                 	sts EICRA, mpr
+000051 e003                      	ldi mpr, high(832)
+000052 9300 0098                 	sts UBRR1H, mpr
+000054 e400                      	ldi mpr, low(832)
+000055 9300 0099                 	sts UBRR1L, mpr
+                                 	
+                                 	;ldi mpr, $A0 ;$16 - idk where these came from
+                                 	;sts UBRR1L, mpr
+                                 	.
+                                 	;ldi mpr, $01 ;$92 - idk where these came from
+                                 	;sts UBRR1H, mpr
                                  
-                                 	;Other
-000060 e0a0                      	ldi XL, low(BUFFER)
-000061 e0b1                      	ldi XH, high(BUFFER)
-000062 e0c0                      	ldi YL, low(BUFFER)
-000063 e0d1                      	ldi YH, high(BUFFER)
+                                 	;Enable transmitter
+000057 e002                      	ldi mpr, (1<<U2X1)
+000058 9300 009b                 	sts UCSR1A, mpr
+                                 
+00005a e008                      	ldi mpr, (1<<TXEN1)
+00005b 9300 009a                 	sts UCSR1B, mpr
+                                 	;ldi mpr, $08
+                                 	;sts UCSR1B, mpr
                                  	
+                                 	;Set frame format: 8 data bits, 2 stop bits
+                                 	
+00005d e00e                      	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)
+00005e 9300 009d                 	sts UCSR1C, mpr
+                                 
+                                 	;ldi mpr, 0b00001110
+                                 	;sts UCSR1C, mpr
+                                 
+                                 	;Buttons Interupts
+000060 2700                      	clr mpr
+000061 e20a                      	ldi mpr, 0b00101010
+000062 9300 006a                 	sts EICRA, mpr
+000064 e20a                      	ldi mpr, 0b00101010
+000065 bf0a                      	out EICRB, mpr
+                                 
+000066 e307                      	ldi mpr, 0b00110111
+000067 bf09                      	out EIMSK, mpr
+                                 
+000068 9478                      	sei
+                                 	;Other
+                                 
                                  ;***********************************************************
                                  ;*	Main Program
                                  ;***********************************************************
                                  MAIN:
-                                 	
-000064 8108                      	ld mpr, Y
-000065 3505                      	cpi mpr, BotAddress
-000066 f7e9                      	brne Main
-000067 d029                      	rcall ResetX
-000068 8109                      	ldd mpr, Y+1
-                                 	
-000069 3b00                      	cpi mpr, MovFwdC
-00006a f409                      	brne Bck
-00006b d00d                      	rcall MoveForward
-                                 Bck:
-00006c 3800                      	cpi mpr, MovBckC
-00006d f409                      	brne TrnR
-00006e d00d                      	rcall MoveBackward
-                                 
-                                 TrnR:
-00006f 3a00                      	cpi mpr, TurnRC
-000070 f409                      	brne TrnL
-000071 d00d                      	rcall TurnRight
-                                 
-                                 TrnL:
-000072 3900                      	cpi mpr, TurnLC
-000073 f409                      	brne Hlt
-000074 d00d                      	rcall TurnLeft
-                                 
-                                 Hlt:
-000075 3c08                      	cpi mpr, HaltC
-000076 f769                      	brne Main
-000077 d00d                      	rcall Halt_Sub
-                                 
-000078 cfeb                      	rjmp	MAIN
+                                 		
+                                 	;TODO: ???
+000069 cfff                      	rjmp	MAIN
                                  
                                  ;***********************************************************
                                  ;*	Functions and Subroutines
                                  ;***********************************************************
                                  MoveForward:
-000079 e600                      	ldi mpr, MovFwd
-00007a bb08                      	out PORTB, mpr
-00007b 9508                      	ret
+                                 	
+00006a eb20                      	ldi transfer, MovFwd
+                                 	
+00006b d018                      	rcall Transmit
+                                 
+00006c ef0f                      	ldi mpr, $FF
+00006d bf08                      	out EIFR, mpr
+00006e 9518                      	reti
                                  
                                  MoveBackward:
-00007c e000                      	ldi mpr, MovBck
-00007d bb08                      	out PORTB, mpr
-00007e 9508                      	ret
+                                 
+00006f e820                      	ldi transfer, MovBck
+                                 	
+000070 d013                      	rcall Transmit
+                                 
+000071 ef0f                      	ldi mpr, $FF
+000072 bf08                      	out EIFR, mpr
+000073 9518                      	reti
                                  
                                  TurnRight:
-00007f e400                      	ldi mpr, TurnR
-000080 bb08                      	out PORTB, mpr
-000081 9508                      	ret
+                                 
+000074 ea20                      	ldi transfer, TurnR
+                                 	
+000075 d00e                      	rcall Transmit
+                                 
+000076 ef0f                      	ldi mpr, $FF
+000077 bf08                      	out EIFR, mpr
+000078 9518                      	reti
                                  
                                  TurnLeft:
-000082 e200                      	ldi mpr, TurnL
-000083 bb08                      	out PORTB, mpr
-000084 9508                      	ret
+000079 e920                      	ldi transfer, TurnL
+                                 	
+00007a d009                      	rcall Transmit
+                                 
+00007b ef0f                      	ldi mpr, $FF
+00007c bf08                      	out EIFR, mpr
+00007d 9518                      	reti
                                  
                                  Halt_Sub:
-000085 e900                      	ldi mpr, Halt
-000086 bb08                      	out PORTB, mpr
-000087 9508                      	ret
+00007e ec28                      	ldi transfer, Halt
+                                 	
+00007f d004                      	rcall Transmit
+                                 
+000080 ef0f                      	ldi mpr, $FF
+000081 bf08                      	out EIFR, mpr
+000082 9518                      	reti
                                  
                                  Freeze:
                                  
-000088 9508                      	ret
+000083 9518                      	reti
                                  
-                                 RightBump:
-                                 
-000089 9518                      	reti
-                                 
-                                 LeftBump:
+                                 ;Transmit:
+                                 ;	LDS mpr, UCSR1A
+                                 ;	SBRS mpr, UDRE1
+                                 ;	rjmp Transmit
+                                 ;	STS UDR1, address
                                  	
-00008a 9518                      	reti
+                                 ;	LDS mpr, UCSR1A
+                                 ;	cbr mpr, TXC1
+                                 ;	sts UCSR1A, mpr
                                  
-                                 Receive:
-00008b 930f                      	push mpr
-                                 	
-00008c 9100 009c                 	lds mpr, UDR1
-00008e 930d                      	st X+, mpr
-                                 ;	cpi mpr, BotAddress
-                                 ;	brne Skip
-                                 ;	lds command, UDR1
-                                 ;Skip:
-00008f 910f                      	pop mpr
-000090 9518                      	reti
-                                 	
-                                 ResetX:
-000091 e0a0                      	ldi XL, low(BUFFER)
-000092 e0b1                      	ldi XH, high(BUFFER)
-000093 9508                      	ret
+                                 ;Loop:
+                                 ;	LDS mpr, UCSR1A
+                                 ;	SBRS mpr, UDRE1
+                                 ;	rjmp Loop
+                                 ;	STS UDR1, transfer
+                                 
+                                 ;	LDS mpr, UCSR1A
+                                 ;	cbr mpr, TXC1
+                                 ;	sts UCSR1A, mpr
+                                 
+                                 Transmit:
+000084 9100 009b                 	LDS mpr, UCSR1A
+000086 ff05                      	SBRS mpr, UDRE1
+000087 cffc                      	rjmp Transmit
+000088 9310 009c                 	STS UDR1, address
+                                 
+                                 	Loop_1:
+00008a 9100 009b                 		LDS mpr, UCSR1A
+00008c ff05                      		SBRS mpr, UDRE1
+00008d cffc                      		rjmp Loop_1
+00008e 9320 009c                 		STS UDR1, transfer
+                                 
+                                 	Loop_2:
+000090 9100 009b                 		LDS mpr, UCSR1A
+000092 ff06                      		SBRS mpr, TXC1
+000093 cffc                      		rjmp Loop_2
+                                 		
+000094 7f09                      		cbr mpr, TXC1
+000095 9300 009b                 		STS UCSR1A, mpr
+                                 
+                                 
+000097 9508                      	ret
+                                 
                                  ;***********************************************************
                                  ;*	Stored Program Data
                                  ;***********************************************************
-                                 .dseg
-                                 .org $0100
-                                 BUFFER:
-000100                           .byte	2
                                  
                                  ;***********************************************************
                                  ;*	Additional Program Includes
-                                 ;***********************************************************
 
 
 RESOURCE USE INFORMATION
@@ -1503,41 +1531,41 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega128" register use summary:
-x  :   1 y  :   2 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
+x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  43 r17:   0 r18:   0 r19:   0 r20:   0 
-r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   2 r27:   2 r28:   1 
-r29:   1 r30:   0 r31:   0 
-Registers used: 7 out of 35 (20.0%)
+r13:   0 r14:   0 r15:   0 r16:  45 r17:   2 r18:   6 r19:   0 r20:   0 
+r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r29:   0 r30:   0 r31:   0 
+Registers used: 3 out of 35 (8.6%)
 
 "ATmega128" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   6 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
+brne  :   0 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   1 
+clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   1 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   6 cpse  :   0 dec   :   0 elpm  :   0 eor   :   0 fmul  :   0 
+cpi   :   0 cpse  :   0 dec   :   0 elpm  :   0 eor   :   0 fmul  :   0 
 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 
-jmp   :   0 ld    :   1 ldd   :   1 ldi   :  22 lds   :   1 lpm   :   0 
+jmp   :   0 ld    :   0 ldd   :   0 ldi   :  24 lds   :   3 lpm   :   0 
 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 
-mulsu :   0 neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :  11 
-pop   :   1 push  :   1 rcall :   6 ret   :   7 reti  :   3 rjmp  :   5 
+mulsu :   0 neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :  12 
+pop   :   0 push  :   0 rcall :   5 ret   :   1 reti  :   6 rjmp  :  11 
 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 
-sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 
-seh   :   0 sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 
-sev   :   0 sez   :   0 sleep :   0 spm   :   0 st    :   1 std   :   0 
-sts   :   4 sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
+sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   3 sec   :   0 
+seh   :   0 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 
+sev   :   0 sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 
+sts   :   9 sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
 
-Instructions used: 15 out of 114 (13.2%)
+Instructions used: 12 out of 114 (10.5%)
 
 "ATmega128" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000128    162      0    162  131072   0.1%
-[.dseg] 0x000100 0x000102      0      2      2    4096   0.0%
+[.cseg] 0x000000 0x000130    178      0    178  131072   0.1%
+[.dseg] 0x000100 0x000100      0      0      0    4096   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 
 Assembly complete, 0 errors, 0 warnings

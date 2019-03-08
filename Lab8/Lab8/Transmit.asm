@@ -49,13 +49,13 @@
 		rjmp	MoveForward
 .org	$0004
 		rjmp	MoveBackward
-.org	$0006
-		rjmp	TurnRight
 .org	$000A
-		rjmp	TurnLeft
+		rjmp	TurnRight
 .org	$000C
-		rjmp	Halt_Sub
+		rjmp	TurnLeft
 .org	$000E
+		rjmp	Halt_Sub
+.org	$0010
 		rjmp	Freeze
 
 .org	$0046					; End of Interrupt Vectors
@@ -71,32 +71,54 @@ INIT:
 	out spl, mpr
 
 	;I/O Ports
-	ldi mpr, (1<<PD3)
+	;ldi mpr, (1<<PD3)
+	;out DDRD, mpr
+
+	;ldi mpr, $F7
+	;out PORTD, mpr
+
+	ldi mpr, $FF
+	out DDRB, mpr
+
+	ldi mpr, $00
 	out DDRD, mpr
 
-	ldi mpr, $F7
-	out PORTD, mpr
+	ldi mpr, $FF
+	out PortD, mpr
 
-	ldi address, $2A;0b01010101
+	ldi address, $4D;0b01010101
 
 
 	;USART1
 	;Set baudrate at 2400bps
-	ldi mpr, $A0 ;$16 - idk where these came from
-	sts UBRR1L, mpr
-	ldi mpr, $01 ;$92 - idk where these came from
+	
+	ldi mpr, high(832)
 	sts UBRR1H, mpr
+	ldi mpr, low(832)
+	sts UBRR1L, mpr
+	
+	;ldi mpr, $A0 ;$16 - idk where these came from
+	;sts UBRR1L, mpr
+	.
+	;ldi mpr, $01 ;$92 - idk where these came from
+	;sts UBRR1H, mpr
 
 	;Enable transmitter
-	ldi mpr, $00
+	ldi mpr, (1<<U2X1)
 	sts UCSR1A, mpr
 
-	ldi mpr, $08
+	ldi mpr, (1<<TXEN1)
 	sts UCSR1B, mpr
+	;ldi mpr, $08
+	;sts UCSR1B, mpr
 	
 	;Set frame format: 8 data bits, 2 stop bits
-	ldi mpr, 0b00001110
+	
+	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)
 	sts UCSR1C, mpr
+
+	;ldi mpr, 0b00001110
+	;sts UCSR1C, mpr
 
 	;Buttons Interupts
 	clr mpr
@@ -174,25 +196,46 @@ Freeze:
 
 	reti
 
+;Transmit:
+;	LDS mpr, UCSR1A
+;	SBRS mpr, UDRE1
+;	rjmp Transmit
+;	STS UDR1, address
+	
+;	LDS mpr, UCSR1A
+;	cbr mpr, TXC1
+;	sts UCSR1A, mpr
+
+;Loop:
+;	LDS mpr, UCSR1A
+;	SBRS mpr, UDRE1
+;	rjmp Loop
+;	STS UDR1, transfer
+
+;	LDS mpr, UCSR1A
+;	cbr mpr, TXC1
+;	sts UCSR1A, mpr
+
 Transmit:
 	LDS mpr, UCSR1A
 	SBRS mpr, UDRE1
 	rjmp Transmit
 	STS UDR1, address
-	
-	LDS mpr, UCSR1A
-	cbr mpr, TXC1
-	sts UCSR1A, mpr
 
-Loop:
-	LDS mpr, UCSR1A
-	SBRS mpr, UDRE1
-	rjmp Loop
-	STS UDR1, transfer
+	Loop_1:
+		LDS mpr, UCSR1A
+		SBRS mpr, UDRE1
+		rjmp Loop_1
+		STS UDR1, transfer
 
-	LDS mpr, UCSR1A
-	cbr mpr, TXC1
-	sts UCSR1A, mpr
+	Loop_2:
+		LDS mpr, UCSR1A
+		SBRS mpr, TXC1
+		rjmp Loop_2
+		
+		cbr mpr, TXC1
+		STS UCSR1A, mpr
+
 
 	ret
 
