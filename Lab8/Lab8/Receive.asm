@@ -27,7 +27,7 @@
 .equ	EngDirR = 5				; Right Engine Direction Bit
 .equ	EngDirL = 6				; Left Engine Direction Bit
 
-.equ	BotAddress = 0b01010101;(Enter your robot's address here (8 bits))
+.equ	BotAddress = $4D;(Enter your robot's address here (8 bits))
 
 ;/////////////////////////////////////////////////////////////
 ;These macros are the values to make the TekBot Move.
@@ -64,9 +64,10 @@
 		rjmp	RightBump
 ;- USART receive
 .org	$003C
+		rjmp	Receive
 		; some subroutine?
 .org	$0046					; End of Interrupt Vectors
-		rjmp	Receive
+		;rjmp	Receive
 ;***********************************************************
 ;*	Program Initialization
 ;***********************************************************
@@ -99,15 +100,24 @@ INIT:
 	ldi mpr, low(832)
 	sts UBRR1L, mpr
 	
+	ldi mpr, (1<<U2X1)
+	sts UCSR1A, mpr
+
+	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)
+	sts UCSR1B, mpr
+
+	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)
+	sts UCSR1C, mpr
+
 	;ldi mpr, $A0
 	;sts UBRR1L, mpr
 	;ldi mpr, $01
 	;sts UBRR1H, mpr
 		;Enable receiver and enable receive interrupts
-	ldi mpr, 0b10010000
-	sts UCSR1C, mpr
+	;ldi mpr, 0b10010000
+	;sts UCSR1C, mpr
 		;Set frame format: 8 data bits, 2 stop bits
-	ldi mpr, 0b00001110
+	;ldi mpr, 0b00001110
 	
 	;External Interrupts
 		;Set the External Interrupt Mask
@@ -127,35 +137,40 @@ INIT:
 ;*	Main Program
 ;***********************************************************
 MAIN:
+	rcall Resetx
+
+	;ld mpr, x
+	;ldi mpr, $4D
+	;out PortB, mpr
 	
-	ld mpr, Y
-	cpi mpr, BotAddress
-	brne Main
-	rcall ResetX
-	ldd mpr, Y+1
-	
-	cpi mpr, MovFwdC
-	brne Bck
-	rcall MoveForward
-Bck:
-	cpi mpr, MovBckC
-	brne TrnR
-	rcall MoveBackward
+;	ld mpr, Y
+;	cpi mpr, BotAddress
+;	brne Main
+;	rcall ResetX
+;	ldd mpr, Y+1
+;	
+;	cpi mpr, MovFwdC
+;	brne Bck
+;	rcall MoveForward
+;Bck:
+;	cpi mpr, MovBckC
+;	brne TrnR
+;	rcall MoveBackward
+;
+;TrnR:
+;	cpi mpr, TurnRC
+;	brne TrnL
+;	rcall TurnRight
+;
+;TrnL:
+;	cpi mpr, TurnLC
+;	brne Hlt
+;	rcall TurnLeft
 
-TrnR:
-	cpi mpr, TurnRC
-	brne TrnL
-	rcall TurnRight
-
-TrnL:
-	cpi mpr, TurnLC
-	brne Hlt
-	rcall TurnLeft
-
-Hlt:
-	cpi mpr, HaltC
-	brne Main
-	rcall Halt_Sub
+;Hlt:
+;	cpi mpr, HaltC
+;	brne Main
+;	rcall Halt_Sub
 
 	rjmp	MAIN
 
@@ -203,11 +218,14 @@ Receive:
 	push mpr
 	
 	lds mpr, UDR1
-	st X+, mpr
+	st X, mpr
 ;	cpi mpr, BotAddress
 ;	brne Skip
 ;	lds command, UDR1
 ;Skip:
+	;lds mpr, UDR1
+	ldi mpr, $FF
+	out PortB, mpr
 	pop mpr
 	reti
 	

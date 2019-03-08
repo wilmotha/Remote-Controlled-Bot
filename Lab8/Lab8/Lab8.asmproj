@@ -15,7 +15,7 @@
     <Name>Lab8</Name>
     <RootNamespace>Lab8</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
-    <EntryFile>$(MSBuildProjectDirectory)\Transmit.asm</EntryFile>
+    <EntryFile>$(MSBuildProjectDirectory)\Receive.asm</EntryFile>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>

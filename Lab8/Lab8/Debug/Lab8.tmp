@@ -7,7 +7,7 @@
   <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
   <DIR></DIR>
  </INCLUDE_PATH>
- <SOURCE_FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</SOURCE_FILE>
+ <SOURCE_FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</SOURCE_FILE>
  <INCLUDED_FILES>
   <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc</FILE>
  </INCLUDED_FILES>
@@ -22,16 +22,18 @@
   <FILE>Lab8.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <INIT><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>66</LINE></INIT>
-  <MoveForward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>147</LINE></MoveForward>
-  <MoveBackward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>157</LINE></MoveBackward>
-  <TurnRight><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>167</LINE></TurnRight>
-  <TurnLeft><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>177</LINE></TurnLeft>
-  <Halt_Sub><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>186</LINE></Halt_Sub>
-  <Freeze><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>195</LINE></Freeze>
-  <MAIN><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>139</LINE></MAIN>
-  <Transmit><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>219</LINE></Transmit>
-  <Loop_1><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>225</LINE></Loop_1>
-  <Loop_2><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>231</LINE></Loop_2>
+  <INIT><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>74</LINE></INIT>
+  <LeftBump><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>213</LINE></LeftBump>
+  <RightBump><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>209</LINE></RightBump>
+  <Receive><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>217</LINE></Receive>
+  <BUFFER><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>241</LINE></BUFFER>
+  <MAIN><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>139</LINE></MAIN>
+  <Resetx><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>232</LINE></Resetx>
+  <MoveForward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>180</LINE></MoveForward>
+  <MoveBackward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>185</LINE></MoveBackward>
+  <TurnRight><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>190</LINE></TurnRight>
+  <TurnLeft><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>195</LINE></TurnLeft>
+  <Halt_Sub><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>200</LINE></Halt_Sub>
+  <Freeze><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>205</LINE></Freeze>
  </LABELS>
 </ASSEMBLER_INFO>
