@@ -1,0 +1,9 @@
+*.hex
+
+*.iss
+
+*.map
+
+*.obj
+
+*.tmp
