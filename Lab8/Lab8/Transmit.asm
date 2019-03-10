@@ -143,7 +143,7 @@ Skip2:
 MoveForward:
 	ldi transfer, MovFwd		
 	rcall Transmit
-	
+
 	ret
 
 ;----------------------------------------------------------------
@@ -186,7 +186,7 @@ TurnLeft:
 Halt_Sub:
 	ldi transfer, Halt
 	rcall Transmit
-	
+
 	ret
 
 ;----------------------------------------------------------------
