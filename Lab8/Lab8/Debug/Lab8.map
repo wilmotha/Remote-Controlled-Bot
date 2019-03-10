@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm Sat Mar 09 18:48:40 2019
+AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm Sat Mar 09 19:02:05 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -885,15 +885,15 @@ CSEG MAIN         00000061
 CSEG Bck          00000067
 CSEG MoveForward  0000007c
 CSEG TrnR         0000006b
-CSEG MoveBackward 00000081
+CSEG MoveBackward 0000007f
 CSEG TrnL         0000006f
-CSEG TurnRight    00000086
+CSEG TurnRight    00000082
 CSEG Hlt          00000073
-CSEG TurnLeft     0000008b
+CSEG TurnLeft     00000085
 CSEG Fre          00000077
-CSEG Halt_Sub     00000090
+CSEG Halt_Sub     00000088
 CSEG Skip2        0000007b
-CSEG Freeze_sub   00000095
-CSEG Transmit     00000098
-CSEG Loop_1       0000009e
-CSEG Loop_2       000000a4
+CSEG Freeze_sub   0000008b
+CSEG Transmit     0000008e
+CSEG Loop_1       00000094
+CSEG Loop_2       0000009a

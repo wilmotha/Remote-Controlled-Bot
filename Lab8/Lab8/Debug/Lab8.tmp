@@ -36,8 +36,8 @@
   <Halt_Sub><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>203</LINE></Halt_Sub>
   <Skip2><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>157</LINE></Skip2>
   <Freeze_sub><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>212</LINE></Freeze_sub>
-  <Transmit><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>221</LINE></Transmit>
-  <Loop_1><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>227</LINE></Loop_1>
-  <Loop_2><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>234</LINE></Loop_2>
+  <Transmit><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>222</LINE></Transmit>
+  <Loop_1><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>228</LINE></Loop_1>
+  <Loop_2><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>235</LINE></Loop_2>
  </LABELS>
 </ASSEMBLER_INFO>

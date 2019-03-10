@@ -167,8 +167,8 @@ MoveForward:
 	
 	rcall Transmit
 
-	ldi mpr, $FF
-	out EIFR, mpr
+;	ldi mpr, $FF
+;	out EIFR, mpr
 	ret
 
 MoveBackward:
@@ -177,8 +177,8 @@ MoveBackward:
 	
 	rcall Transmit
 
-	ldi mpr, $FF
-	out EIFR, mpr
+;	ldi mpr, $FF
+;	out EIFR, mpr
 	ret
 
 TurnRight:
@@ -187,8 +187,8 @@ TurnRight:
 	
 	rcall Transmit
 
-	ldi mpr, $FF
-	out EIFR, mpr
+;	ldi mpr, $FF
+;	out EIFR, mpr
 	ret
 
 TurnLeft:
@@ -196,8 +196,8 @@ TurnLeft:
 	
 	rcall Transmit
 
-	ldi mpr, $FF
-	out EIFR, mpr
+;	ldi mpr, $FF
+;	out EIFR, mpr
 	ret
 
 Halt_Sub:
@@ -205,8 +205,8 @@ Halt_Sub:
 	
 	rcall Transmit
 
-	ldi mpr, $FF
-	out EIFR, mpr
+;	ldi mpr, $FF
+;	out EIFR, mpr
 	ret
 
 Freeze_sub:
@@ -214,7 +214,8 @@ Freeze_sub:
 	
 	rcall Transmit
 
-
+;	ldi mpr, $FF
+;	out EIFR, mpr
 	ret
 
 
