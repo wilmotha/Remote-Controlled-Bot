@@ -25,18 +25,19 @@
   <INIT><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>66</LINE></INIT>
   <MAIN><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>122</LINE></MAIN>
   <Bck><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>130</LINE></Bck>
-  <MoveForward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>159</LINE></MoveForward>
+  <MoveForward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>164</LINE></MoveForward>
   <TrnR><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>136</LINE></TrnR>
-  <MoveBackward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>169</LINE></MoveBackward>
+  <MoveBackward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>174</LINE></MoveBackward>
   <TrnL><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>141</LINE></TrnL>
-  <TurnRight><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>179</LINE></TurnRight>
+  <TurnRight><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>184</LINE></TurnRight>
   <Hlt><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>146</LINE></Hlt>
-  <TurnLeft><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>189</LINE></TurnLeft>
-  <Skip2><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>152</LINE></Skip2>
-  <Halt_Sub><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>198</LINE></Halt_Sub>
-  <Transmit><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>211</LINE></Transmit>
-  <Freeze><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>207</LINE></Freeze>
-  <Loop_1><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>217</LINE></Loop_1>
-  <Loop_2><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>224</LINE></Loop_2>
+  <TurnLeft><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>194</LINE></TurnLeft>
+  <Fre><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>152</LINE></Fre>
+  <Halt_Sub><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>203</LINE></Halt_Sub>
+  <Skip2><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>157</LINE></Skip2>
+  <Freeze_sub><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>212</LINE></Freeze_sub>
+  <Transmit><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>221</LINE></Transmit>
+  <Loop_1><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>227</LINE></Loop_1>
+  <Loop_2><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm</FILE><LINE>234</LINE></Loop_2>
  </LABELS>
 </ASSEMBLER_INFO>

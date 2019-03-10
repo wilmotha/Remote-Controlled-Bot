@@ -23,6 +23,13 @@
 .def	address = r17
 .def	command = r18
 
+.def	waitcnt = r19			; Wait Loop Counter
+.def	ilcnt = r20				; Inner Loop Counter
+.def	olcnt = r21				; Outer Loop Counter
+
+.equ	FTime = 255
+.equ	WTime = 100				; Time to wait in wait loop
+
 .equ	WskrR = 0				; Right Whisker Input Bit
 .equ	WskrL = 1				; Left Whisker Input Bit
 .equ	EngEnR = 4				; Right Engine Enable Bit
@@ -178,8 +185,38 @@ Halt_Sub:
 	out PORTB, mpr
 	ret
 
-GetFreezed:
+;----------------------------------------------------------------
+; Sub:	Wait
+; Desc:	A wait loop that is 16 + 159975*waitcnt cycles or roughly 
+;		waitcnt*10ms.  Just initialize wait for the specific amount 
+;		of time in 10ms intervals. Here is the general eqaution
+;		for the number of clock cycles in the wait loop:
+;			((3 * ilcnt + 3) * olcnt + 3) * waitcnt + 13 + call
+;----------------------------------------------------------------
+Wait:
+		push	waitcnt			; Save wait register
+		push	ilcnt			; Save ilcnt register
+		push	olcnt			; Save olcnt register
 
+Loop:	ldi		olcnt, 224		; load olcnt register
+OLoop:	ldi		ilcnt, 237		; load ilcnt register
+ILoop:	dec		ilcnt			; decrement ilcnt
+		brne	ILoop			; Continue Inner Loop
+		dec		olcnt		; decrement olcnt
+		brne	OLoop			; Continue Outer Loop
+		dec		waitcnt		; Decrement wait 
+		brne	Loop			; Continue Wait loop	
+
+		pop		olcnt		; Restore olcnt register
+		pop		ilcnt		; Restore ilcnt register
+		pop		waitcnt		; Restore wait register
+		reti				; Return from subroutine
+
+GetFreezed:
+	ldi	waitcnt, FTime	; Wait for 1 second
+	rcall Wait
+	ldi	waitcnt, FTime
+	rcall Wait
 	ret
 
 Freezer:
@@ -201,12 +238,66 @@ Freezer:
 	ret
 
 RightBump:
+		push	mpr			; Save mpr register
+		push	waitcnt			; Save wait register
+		in		mpr, SREG	; Save program state
+		push	mpr			;
 
+		; Move Backwards for a second
+		ldi		mpr, MovBck	; Load Move Backward command
+		out		PORTB, mpr	; Send command to port
+		ldi		waitcnt, WTime	; Wait for 1 second
+		rcall	Wait			; Call wait function
+
+		; Turn left for a second
+		ldi		mpr, TurnL	; Load Turn Left Command
+		out		PORTB, mpr	; Send command to port
+		ldi		waitcnt, WTime	; Wait for 1 second
+		rcall	Wait			; Call wait function
+
+		; Move Forward again	
+		ldi		mpr, MovFwd	; Load Move Forward command
+		out		PORTB, mpr	; Send command to port
+
+		ldi mpr, $FF
+		out EIFR, mpr
+
+		pop		mpr		; Restore program state
+		out		SREG, mpr	;
+		pop		waitcnt		; Restore wait register
+		pop		mpr		; Restore mpr
 	reti
 
 LeftBump:
-	
-	reti
+	push	mpr			; Save mpr register
+		push	waitcnt			; Save wait register
+		in		mpr, SREG	; Save program state
+		push	mpr			;
+
+		; Move Backwards for a second
+		ldi		mpr, MovBck	; Load Move Backward command
+		out		PORTB, mpr	; Send command to port
+		ldi		waitcnt, WTime	; Wait for 1 second
+		rcall	Wait			; Call wait function
+
+		; Turn right for a second
+		ldi		mpr, TurnR	; Load Turn Left Command
+		out		PORTB, mpr	; Send command to port
+		ldi		waitcnt, WTime	; Wait for 1 second
+		rcall	Wait			; Call wait function
+
+		; Move Forward again	
+		ldi		mpr, MovFwd	; Load Move Forward command
+		out		PORTB, mpr	; Send command to port
+		
+		ldi mpr, $FF
+		out EIFR, mpr
+
+		pop		mpr		; Restore program state
+		out		SREG, mpr	;
+		pop		waitcnt		; Restore wait register
+		pop		mpr		; Restore mpr
+		reti
 
 Receive:
 

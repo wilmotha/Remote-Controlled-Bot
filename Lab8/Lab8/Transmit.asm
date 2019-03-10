@@ -34,7 +34,7 @@
 .equ	TurnR =   ($80|1<<(EngDirL-1))					;0b10100000 Turn Right Action Code
 .equ	TurnL =   ($80|1<<(EngDirR-1))					;0b10010000 Turn Left Action Code
 .equ	Halt =    ($80|1<<(EngEnR-1)|1<<(EngEnL-1))		;0b11001000 Halt Action Code
-
+.equ	Freeze =  0b11111000
 ;***********************************************************
 ;*	Start of Code Segment
 ;***********************************************************
@@ -146,9 +146,14 @@ TrnL:
 Hlt:
 
 	cpi mpr, 0b10111111
-	brne Skip2
+	brne Fre
 	rcall Halt_Sub
 	rjmp	MAIN
+Fre:
+	cpi mpr, 0b01111111
+	brne Skip2
+	rcall Freeze_sub
+	rjmp Main
 Skip2:
 	
 	rjmp	MAIN
@@ -204,9 +209,14 @@ Halt_Sub:
 	out EIFR, mpr
 	ret
 
-Freeze:
+Freeze_sub:
+	ldi transfer, Freeze
+	
+	rcall Transmit
+
 
 	ret
+
 
 Transmit:
 	LDS mpr, UCSR1A

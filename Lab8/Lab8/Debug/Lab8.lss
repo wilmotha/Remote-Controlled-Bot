@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm Sat Mar 09 18:43:03 2019
+AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm Sat Mar 09 18:48:40 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
 C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
@@ -1303,7 +1303,7 @@ C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm(16): Including file 
                                  .equ	TurnR =   ($80|1<<(EngDirL-1))					;0b10100000 Turn Right Action Code
                                  .equ	TurnL =   ($80|1<<(EngDirR-1))					;0b10010000 Turn Left Action Code
                                  .equ	Halt =    ($80|1<<(EngEnR-1)|1<<(EngEnL-1))		;0b11001000 Halt Action Code
-                                 
+                                 .equ	Freeze =  0b11111000
                                  ;***********************************************************
                                  ;*	Start of Code Segment
                                  ;***********************************************************
@@ -1394,112 +1394,122 @@ C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm(16): Including file 
 000062 bb08                      	out PORTB, mpr
 000063 3f0e                      	cpi mpr, 0b11111110
 000064 f411                      	brne Bck
-000065 d012                      	rcall MoveForward
+000065 d016                      	rcall MoveForward
 000066 cffa                      	rjmp	MAIN
                                  Bck:
 000067 3f0d                      	cpi mpr, 0b11111101
 000068 f411                      	brne TrnR
-000069 d013                      	rcall MoveBackward
+000069 d017                      	rcall MoveBackward
 00006a cff6                      	rjmp	MAIN
                                  
                                  TrnR:
 00006b 3e0f                      	cpi mpr, 0b11101111
 00006c f411                      	brne TrnL
-00006d d014                      	rcall TurnRight
+00006d d018                      	rcall TurnRight
 00006e cff2                      	rjmp	MAIN
                                  TrnL:
 00006f 3d0f                      	cpi mpr, 0b11011111
 000070 f411                      	brne Hlt
-000071 d015                      	rcall TurnLeft
+000071 d019                      	rcall TurnLeft
 000072 cfee                      	rjmp	MAIN
                                  Hlt:
                                  
 000073 3b0f                      	cpi mpr, 0b10111111
-000074 f411                      	brne Skip2
-000075 d016                      	rcall Halt_Sub
+000074 f411                      	brne Fre
+000075 d01a                      	rcall Halt_Sub
 000076 cfea                      	rjmp	MAIN
+                                 Fre:
+000077 370f                      	cpi mpr, 0b01111111
+000078 f411                      	brne Skip2
+000079 d01b                      	rcall Freeze_sub
+00007a cfe6                      	rjmp Main
                                  Skip2:
                                  	
-000077 cfe9                      	rjmp	MAIN
+00007b cfe5                      	rjmp	MAIN
                                  
                                  ;***********************************************************
                                  ;*	Functions and Subroutines
                                  ;***********************************************************
                                  MoveForward:
                                  	
-000078 eb20                      	ldi transfer, MovFwd
+00007c eb20                      	ldi transfer, MovFwd
                                  	
-000079 d018                      	rcall Transmit
+00007d d01a                      	rcall Transmit
                                  
-00007a ef0f                      	ldi mpr, $FF
-00007b bf08                      	out EIFR, mpr
-00007c 9508                      	ret
+00007e ef0f                      	ldi mpr, $FF
+00007f bf08                      	out EIFR, mpr
+000080 9508                      	ret
                                  
                                  MoveBackward:
                                  
-00007d e820                      	ldi transfer, MovBck
+000081 e820                      	ldi transfer, MovBck
                                  	
-00007e d013                      	rcall Transmit
+000082 d015                      	rcall Transmit
                                  
-00007f ef0f                      	ldi mpr, $FF
-000080 bf08                      	out EIFR, mpr
-000081 9508                      	ret
+000083 ef0f                      	ldi mpr, $FF
+000084 bf08                      	out EIFR, mpr
+000085 9508                      	ret
                                  
                                  TurnRight:
                                  
-000082 ea20                      	ldi transfer, TurnR
+000086 ea20                      	ldi transfer, TurnR
                                  	
-000083 d00e                      	rcall Transmit
+000087 d010                      	rcall Transmit
                                  
-000084 ef0f                      	ldi mpr, $FF
-000085 bf08                      	out EIFR, mpr
-000086 9508                      	ret
+000088 ef0f                      	ldi mpr, $FF
+000089 bf08                      	out EIFR, mpr
+00008a 9508                      	ret
                                  
                                  TurnLeft:
-000087 e920                      	ldi transfer, TurnL
+00008b e920                      	ldi transfer, TurnL
                                  	
-000088 d009                      	rcall Transmit
+00008c d00b                      	rcall Transmit
                                  
-000089 ef0f                      	ldi mpr, $FF
-00008a bf08                      	out EIFR, mpr
-00008b 9508                      	ret
+00008d ef0f                      	ldi mpr, $FF
+00008e bf08                      	out EIFR, mpr
+00008f 9508                      	ret
                                  
                                  Halt_Sub:
-00008c ec28                      	ldi transfer, Halt
+000090 ec28                      	ldi transfer, Halt
                                  	
-00008d d004                      	rcall Transmit
+000091 d006                      	rcall Transmit
                                  
-00008e ef0f                      	ldi mpr, $FF
-00008f bf08                      	out EIFR, mpr
-000090 9508                      	ret
+000092 ef0f                      	ldi mpr, $FF
+000093 bf08                      	out EIFR, mpr
+000094 9508                      	ret
                                  
-                                 Freeze:
+                                 Freeze_sub:
+000095 ef28                      	ldi transfer, Freeze
+                                 	
+000096 d001                      	rcall Transmit
                                  
-000091 9508                      	ret
+                                 
+000097 9508                      	ret
+                                 
                                  
                                  Transmit:
-000092 9100 009b                 	LDS mpr, UCSR1A
-000094 ff05                      	SBRS mpr, UDRE1
-000095 cffc                      	rjmp Transmit
-000096 9310 009c                 	STS UDR1, address
+000098 9100 009b                 	LDS mpr, UCSR1A
+00009a ff05                      	SBRS mpr, UDRE1
+00009b cffc                      	rjmp Transmit
+00009c 9310 009c                 	STS UDR1, address
                                  
                                  	Loop_1:
-000098 9100 009b                 		LDS mpr, UCSR1A
-00009a ff05                      		SBRS mpr, UDRE1
-00009b cffc                      		rjmp Loop_1
-00009c 9320 009c                 		STS UDR1, transfer
+00009e 9100 009b                 		LDS mpr, UCSR1A
+0000a0 ff05                      		SBRS mpr, UDRE1
+0000a1 cffc                      		rjmp Loop_1
+0000a2 9320 009c                 		STS UDR1, transfer
                                  		;out portb, transfer; test
                                  
                                  	Loop_2:
-00009e 9100 009b                 		LDS mpr, UCSR1A
-0000a0 ff06                      		SBRS mpr, TXC1
-0000a1 cffc                      		rjmp Loop_2
+0000a4 9100 009b                 		LDS mpr, UCSR1A
+0000a6 ff06                      		SBRS mpr, TXC1
+0000a7 cffc                      		rjmp Loop_2
                                  		
-0000a2 7f09                      		cbr mpr, TXC1
-0000a3 9300 009b                 		STS UCSR1A, mpr
+0000a8 7f09                      		cbr mpr, TXC1
+0000a9 9300 009b                 		STS UCSR1A, mpr
                                  
                                  
-0000a5 9508                      	ret
+0000ab 9508                      	ret
                                  
                                  ;***********************************************************
                                  ;*	Stored Program Data
@@ -1526,7 +1536,7 @@ counted separately from r26..r31 here.
 "ATmega128" register use summary:
 x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  45 r17:   2 r18:   6 r19:   0 r20:   0 
+r13:   0 r14:   0 r15:   0 r16:  46 r17:   2 r18:   7 r19:   0 r20:   0 
 r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:   0 r31:   0 
 Registers used: 3 out of 35 (8.6%)
@@ -1536,16 +1546,16 @@ Registers used: 3 out of 35 (8.6%)
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   5 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brne  :   6 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   1 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   5 cpse  :   0 dec   :   0 elpm  :   0 eor   :   0 fmul  :   0 
+cpi   :   6 cpse  :   0 dec   :   0 elpm  :   0 eor   :   0 fmul  :   0 
 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 in    :   1 inc   :   0 
-jmp   :   0 ld    :   0 ldd   :   0 ldi   :  21 lds   :   3 lpm   :   0 
+jmp   :   0 ld    :   0 ldd   :   0 ldi   :  22 lds   :   3 lpm   :   0 
 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 
 mulsu :   0 neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :  11 
-pop   :   0 push  :   0 rcall :  10 ret   :   7 reti  :   0 rjmp  :  10 
+pop   :   0 push  :   0 rcall :  12 ret   :   7 reti  :   0 rjmp  :  11 
 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 
 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   3 sec   :   0 
 seh   :   0 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 
@@ -1557,7 +1567,7 @@ Instructions used: 13 out of 114 (11.4%)
 "ATmega128" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00014c    194      0    194  131072   0.1%
+[.cseg] 0x000000 0x000158    206      0    206  131072   0.2%
 [.dseg] 0x000100 0x000100      0      0      0    4096   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 
