@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 18:20:25 2019
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 18:29:38 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -873,7 +873,8 @@ DEF  command      r18
 DEF  waitcnt      r19
 DEF  ilcnt        r20
 DEF  olcnt        r21
-EQU  WTime        000001f4
+EQU  FTime        000000ff
+EQU  WTime        00000064
 EQU  WskrR        00000000
 EQU  WskrL        00000001
 EQU  EngEnR       00000004
@@ -892,11 +893,11 @@ EQU  TurnRC       000000a0
 EQU  TurnLC       00000090
 EQU  HaltC        000000c8
 CSEG INIT         00000046
-CSEG LeftBump     000000a0
-CSEG RightBump    0000009f
-CSEG Receive      000000a1
+CSEG LeftBump     000000b7
+CSEG RightBump    000000a2
+CSEG Receive      000000cc
 DSEG BUFFER       00000100
-CSEG Resetx       000000bf
+CSEG Resetx       000000ea
 CSEG MAIN         0000006f
 CSEG MoveForward  00000070
 CSEG MoveBackward 00000073
@@ -908,14 +909,14 @@ CSEG Loop         00000082
 CSEG OLoop        00000083
 CSEG ILoop        00000084
 CSEG GetFreezed   0000008e
-CSEG Freezer      00000090
-CSEG Loop_2       00000097
-CSEG Skip         000000ba
-CSEG Rec2         000000ad
-CSEG Commands     000000c2
-CSEG Skip3        000000be
-CSEG Bck          000000c6
-CSEG TrnR         000000c9
-CSEG TrnL         000000cc
-CSEG Hlt          000000cf
-CSEG Skip2        000000d2
+CSEG Freezer      00000093
+CSEG Loop_2       0000009a
+CSEG Skip         000000e5
+CSEG Rec2         000000d8
+CSEG Commands     000000ed
+CSEG Skip3        000000e9
+CSEG Bck          000000f1
+CSEG TrnR         000000f4
+CSEG TrnL         000000f7
+CSEG Hlt          000000fa
+CSEG Skip2        000000fd
