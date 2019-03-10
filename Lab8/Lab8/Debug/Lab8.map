@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm Fri Mar 08 00:37:11 2019
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 18:16:58 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -868,6 +868,8 @@ EQU  TWIaddr      00000042
 EQU  SPMRaddr     00000044
 EQU  INT_VECTORS_SIZE 00000046
 DEF  mpr          r16
+DEF  address      r17
+DEF  command      r18
 EQU  WskrR        00000000
 EQU  WskrL        00000001
 EQU  EngEnR       00000004
@@ -886,15 +888,26 @@ EQU  TurnRC       000000a0
 EQU  TurnLC       00000090
 EQU  HaltC        000000c8
 CSEG INIT         00000046
-CSEG LeftBump     0000007d
-CSEG RightBump    0000007c
-CSEG Receive      0000007e
+CSEG LeftBump     00000090
+CSEG RightBump    0000008f
+CSEG Receive      00000091
 DSEG BUFFER       00000100
-CSEG MAIN         0000006a
-CSEG Resetx       00000086
-CSEG MoveForward  0000006c
-CSEG MoveBackward 0000006f
-CSEG TurnRight    00000072
-CSEG TurnLeft     00000075
-CSEG Halt_Sub     00000078
-CSEG Freeze       0000007b
+CSEG Resetx       000000af
+CSEG MAIN         0000006f
+CSEG MoveForward  00000070
+CSEG MoveBackward 00000073
+CSEG TurnRight    00000076
+CSEG TurnLeft     00000079
+CSEG Halt_Sub     0000007c
+CSEG GetFreezed   0000007f
+CSEG Freezer      00000080
+CSEG Loop_2       00000087
+CSEG Skip         000000aa
+CSEG Rec2         0000009d
+CSEG Commands     000000b2
+CSEG Skip3        000000ae
+CSEG Bck          000000b6
+CSEG TrnR         000000b9
+CSEG TrnL         000000bc
+CSEG Hlt          000000bf
+CSEG Skip2        000000c2

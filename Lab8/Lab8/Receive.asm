@@ -20,6 +20,9 @@
 ;***********************************************************
 .def	mpr = r16				; Multi-Purpose Register
 
+.def	address = r17
+.def	command = r18
+
 .equ	WskrR = 0				; Right Whisker Input Bit
 .equ	WskrL = 1				; Left Whisker Input Bit
 .equ	EngEnR = 4				; Right Engine Enable Bit
@@ -38,10 +41,10 @@
 .equ	TurnL =   (1<<EngDirR)				;0b00100000 Turn Left Action Code
 .equ	Halt =    (1<<EngEnR|1<<EngEnL)		;0b10010000 Halt Action Code
 
-.equ	MovFwdC =  ($80|1<<(EngDirR-1)|1<<(EngDirL-1))	;0b10110000 Move Forward Action Code
+.equ	MovFwdC =  ($80|1<<(EngDirR-1)|1<<(EngDirL-1))		;0b10110000 Move Forward Action Code
 .equ	MovBckC =  ($80|$00)								;0b10000000 Move Backward Action Code
-.equ	TurnRC =   ($80|1<<(EngDirL-1))					;0b10100000 Turn Right Action Code
-.equ	TurnLC =   ($80|1<<(EngDirR-1))					;0b10010000 Turn Left Action Code
+.equ	TurnRC =   ($80|1<<(EngDirL-1))						;0b10100000 Turn Right Action Code
+.equ	TurnLC =   ($80|1<<(EngDirR-1))						;0b10010000 Turn Left Action Code
 .equ	HaltC =    ($80|1<<(EngEnR-1)|1<<(EngEnL-1))		;0b11001000 Halt Action Code
 
 ;***********************************************************
@@ -103,7 +106,7 @@ INIT:
 	ldi mpr, (1<<U2X1)
 	sts UCSR1A, mpr
 
-	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)
+	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)
 	sts UCSR1B, mpr
 
 	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)
@@ -127,50 +130,23 @@ INIT:
 	ldi mpr, 0b00001010
 	sts EICRA, mpr
 
+	sei
 	;Other
 	ldi XL, low(BUFFER)
 	ldi XH, high(BUFFER)
 	ldi YL, low(BUFFER)
 	ldi YH, high(BUFFER)
+	ldi mpr, $00
+	st x+, mpr
+	st x, mpr
+	rcall Resetx
+
 	
 ;***********************************************************
 ;*	Main Program
 ;***********************************************************
 MAIN:
-	rcall Resetx
-
-	;ld mpr, x
-	;ldi mpr, $4D
-	;out PortB, mpr
 	
-;	ld mpr, Y
-;	cpi mpr, BotAddress
-;	brne Main
-;	rcall ResetX
-;	ldd mpr, Y+1
-;	
-;	cpi mpr, MovFwdC
-;	brne Bck
-;	rcall MoveForward
-;Bck:
-;	cpi mpr, MovBckC
-;	brne TrnR
-;	rcall MoveBackward
-;
-;TrnR:
-;	cpi mpr, TurnRC
-;	brne TrnL
-;	rcall TurnRight
-;
-;TrnL:
-;	cpi mpr, TurnLC
-;	brne Hlt
-;	rcall TurnLeft
-
-;Hlt:
-;	cpi mpr, HaltC
-;	brne Main
-;	rcall Halt_Sub
 
 	rjmp	MAIN
 
@@ -202,7 +178,25 @@ Halt_Sub:
 	out PORTB, mpr
 	ret
 
-Freeze:
+GetFreezed:
+
+	ret
+
+Freezer:
+	LDS mpr, UCSR1A
+	SBRS mpr, UDRE1
+	rjmp Freezer
+	ldi mpr, 0b01010101
+	STS UDR1, mpr
+
+	Loop_2:
+		LDS mpr, UCSR1A
+		SBRS mpr, TXC1
+		rjmp Loop_2
+		
+		cbr mpr, TXC1
+		STS UCSR1A, mpr
+
 
 	ret
 
@@ -215,31 +209,83 @@ LeftBump:
 	reti
 
 Receive:
-	push mpr
-	
+
 	lds mpr, UDR1
 	st X, mpr
-;	cpi mpr, BotAddress
-;	brne Skip
-;	lds command, UDR1
-;Skip:
-	;lds mpr, UDR1
-	ldi mpr, $FF
-	out PortB, mpr
-	pop mpr
+	
+	lds mpr, UCSR1A
+	cbr mpr, RXC1
+	STS UCSR1A, mpr
+	
+	ld r3, X
+	ldi mpr, BotAddress
+
+	cp mpr, r3
+	brne Skip
+	
+Rec2:	
+	lds   mpr,    UCSR1A
+	sbrs  mpr,    RXC1
+	rjmp  Rec2
+	lds   mpr,    UDR1
+	st    X,      mpr
+	lds   mpr,    UCSR1A
+	cbr   mpr,    RXC1
+	sts   UCSR1A, mpr
+	rcall Commands
+
+
+Skip:
+	ldi mpr, 0b01010101
+	cp mpr, r3
+	brne Skip3
+	rcall GetFreezed
+
+Skip3:
 	reti
 	
 ResetX:
+	;mov XL, YL
+	;mov XH, XH
 	ldi XL, low(BUFFER)
 	ldi XH, high(BUFFER)
 	ret
+
+Commands:
+	
+	ld mpr, x
+
+	cpi mpr, MovFwdC
+	brne Bck
+	rcall MoveForward
+Bck:
+	cpi mpr, MovBckC
+	brne TrnR
+	rcall MoveBackward
+
+TrnR:
+	cpi mpr, TurnRC
+	brne TrnL
+	rcall TurnRight
+
+TrnL:
+	cpi mpr, TurnLC
+	brne Hlt
+	rcall TurnLeft
+Hlt:
+	cpi mpr, HaltC
+	brne Skip2
+	rcall Halt_Sub
+Skip2:
+	rcall ResetX
+ret
 ;***********************************************************
 ;*	Stored Program Data
 ;***********************************************************
 .dseg
 .org $0100
 BUFFER:
-.byte	2
+.byte	4
 
 ;***********************************************************
 ;*	Additional Program Includes

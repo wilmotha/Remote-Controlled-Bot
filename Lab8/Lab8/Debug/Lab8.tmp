@@ -1,18 +1,18 @@
 <ASSEMBLER_INFO>
  <VERSION>2.2.7</VERSION>
  <DEVICE>"ATmega128"</DEVICE>
- <WORKING_DIR>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Debug</WORKING_DIR>
+ <WORKING_DIR>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Debug</WORKING_DIR>
  <INCLUDE_PATH>
   <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc</DIR>
   <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
   <DIR></DIR>
  </INCLUDE_PATH>
- <SOURCE_FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</SOURCE_FILE>
+ <SOURCE_FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</SOURCE_FILE>
  <INCLUDED_FILES>
   <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc</FILE>
  </INCLUDED_FILES>
  <OBJECT_FILES>
-  <FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Debug\Lab8.obj</FILE>
+  <FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Debug\Lab8.obj</FILE>
  </OBJECT_FILES>
  <HEX_FILES>
   <FILE>Lab8.hex</FILE>
@@ -22,18 +22,29 @@
   <FILE>Lab8.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <INIT><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>74</LINE></INIT>
-  <LeftBump><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>213</LINE></LeftBump>
-  <RightBump><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>209</LINE></RightBump>
-  <Receive><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>217</LINE></Receive>
-  <BUFFER><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>241</LINE></BUFFER>
-  <MAIN><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>139</LINE></MAIN>
-  <Resetx><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>232</LINE></Resetx>
-  <MoveForward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>180</LINE></MoveForward>
-  <MoveBackward><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>185</LINE></MoveBackward>
-  <TurnRight><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>190</LINE></TurnRight>
-  <TurnLeft><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>195</LINE></TurnLeft>
-  <Halt_Sub><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>200</LINE></Halt_Sub>
-  <Freeze><FILE>C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm</FILE><LINE>205</LINE></Freeze>
+  <INIT><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>77</LINE></INIT>
+  <LeftBump><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>207</LINE></LeftBump>
+  <RightBump><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>203</LINE></RightBump>
+  <Receive><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>211</LINE></Receive>
+  <BUFFER><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>287</LINE></BUFFER>
+  <Resetx><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>247</LINE></Resetx>
+  <MAIN><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>148</LINE></MAIN>
+  <MoveForward><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>156</LINE></MoveForward>
+  <MoveBackward><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>161</LINE></MoveBackward>
+  <TurnRight><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>166</LINE></TurnRight>
+  <TurnLeft><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>171</LINE></TurnLeft>
+  <Halt_Sub><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>176</LINE></Halt_Sub>
+  <GetFreezed><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>181</LINE></GetFreezed>
+  <Freezer><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>185</LINE></Freezer>
+  <Loop_2><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>192</LINE></Loop_2>
+  <Skip><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>238</LINE></Skip>
+  <Rec2><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>226</LINE></Rec2>
+  <Commands><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>254</LINE></Commands>
+  <Skip3><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>244</LINE></Skip3>
+  <Bck><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>261</LINE></Bck>
+  <TrnR><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>266</LINE></TrnR>
+  <TrnL><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>271</LINE></TrnL>
+  <Hlt><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>275</LINE></Hlt>
+  <Skip2><FILE>C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm</FILE><LINE>279</LINE></Skip2>
  </LABELS>
 </ASSEMBLER_INFO>

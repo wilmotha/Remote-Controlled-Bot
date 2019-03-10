@@ -70,13 +70,6 @@ INIT:
 	ldi mpr, low(RAMEND)
 	out spl, mpr
 
-	;I/O Ports
-	;ldi mpr, (1<<PD3)
-	;out DDRD, mpr
-
-	;ldi mpr, $F7
-	;out PORTD, mpr
-
 	ldi mpr, $FF
 	out DDRB, mpr
 
@@ -96,12 +89,6 @@ INIT:
 	sts UBRR1H, mpr
 	ldi mpr, low(832)
 	sts UBRR1L, mpr
-	
-	;ldi mpr, $A0 ;$16 - idk where these came from
-	;sts UBRR1L, mpr
-	.
-	;ldi mpr, $01 ;$92 - idk where these came from
-	;sts UBRR1H, mpr
 
 	;Enable transmitter
 	ldi mpr, (1<<U2X1)
@@ -109,16 +96,12 @@ INIT:
 
 	ldi mpr, (1<<TXEN1)
 	sts UCSR1B, mpr
-	;ldi mpr, $08
-	;sts UCSR1B, mpr
+
 	
 	;Set frame format: 8 data bits, 2 stop bits
 	
 	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)
 	sts UCSR1C, mpr
-
-	;ldi mpr, 0b00001110
-	;sts UCSR1C, mpr
 
 	;Buttons Interupts
 	clr mpr
@@ -137,8 +120,8 @@ INIT:
 ;*	Main Program
 ;***********************************************************
 MAIN:
-		
-	;TODO: ???
+	
+	
 	rjmp	MAIN
 
 ;***********************************************************
@@ -196,26 +179,6 @@ Freeze:
 
 	reti
 
-;Transmit:
-;	LDS mpr, UCSR1A
-;	SBRS mpr, UDRE1
-;	rjmp Transmit
-;	STS UDR1, address
-	
-;	LDS mpr, UCSR1A
-;	cbr mpr, TXC1
-;	sts UCSR1A, mpr
-
-;Loop:
-;	LDS mpr, UCSR1A
-;	SBRS mpr, UDRE1
-;	rjmp Loop
-;	STS UDR1, transfer
-
-;	LDS mpr, UCSR1A
-;	cbr mpr, TXC1
-;	sts UCSR1A, mpr
-
 Transmit:
 	LDS mpr, UCSR1A
 	SBRS mpr, UDRE1
@@ -227,6 +190,7 @@ Transmit:
 		SBRS mpr, UDRE1
 		rjmp Loop_1
 		STS UDR1, transfer
+		;out portb, transfer; test
 
 	Loop_2:
 		LDS mpr, UCSR1A
