@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 18:52:12 2019
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 19:03:07 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
 C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
@@ -1322,7 +1322,7 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  .equ	TurnRC =   ($80|1<<(EngDirL-1))						;0b10100000 Turn Right Action Code
                                  .equ	TurnLC =   ($80|1<<(EngDirR-1))						;0b10010000 Turn Left Action Code
                                  .equ	HaltC =    ($80|1<<(EngEnR-1)|1<<(EngEnL-1))		;0b11001000 Halt Action Code
-                                 
+                                 .equ	FreezeC = 0b11111000
                                  ;***********************************************************
                                  ;*	Start of Code Segment
                                  ;***********************************************************
@@ -1489,12 +1489,15 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
 000092 9508                      	ret
                                  
                                  Freezer:
+                                 	;ldi mpr, 0b11111111 ;remove this just for testing
+                                 	;out PORTB, mpr
+                                 
 000093 9100 009b                 	LDS mpr, UCSR1A
 000095 ff05                      	SBRS mpr, UDRE1
 000096 cffc                      	rjmp Freezer
 000097 e505                      	ldi mpr, 0b01010101
 000098 9300 009c                 	STS UDR1, mpr
-                                 
+                                 	
                                  	Loop_2:
 00009a 9100 009b                 		LDS mpr, UCSR1A
 00009c ff06                      		SBRS mpr, TXC1
@@ -1634,11 +1637,15 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
 0000f9 df7f                      	rcall TurnLeft
                                  Hlt:
 0000fa 3c08                      	cpi mpr, HaltC
-0000fb f409                      	brne Skip2
+0000fb f409                      	brne Fre
 0000fc df7f                      	rcall Halt_Sub
+                                 Fre:
+0000fd 3f08                      	cpi mpr, FreezeC
+0000fe f409                      	brne Skip2
+0000ff df93                      	rcall Freezer
                                  Skip2:
-0000fd dfec                      	rcall ResetX
-0000fe 9508                      ret
+000100 dfe9                      	rcall ResetX
+000101 9508                      ret
                                  ;***********************************************************
                                  ;*	Stored Program Data
                                  ;***********************************************************
@@ -1669,7 +1676,7 @@ counted separately from r26..r31 here.
 "ATmega128" register use summary:
 x  :   6 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   3 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  97 r17:   0 r18:   0 r19:  13 r20:   4 
+r13:   0 r14:   0 r15:   0 r16:  98 r17:   0 r18:   0 r19:  13 r20:   4 
 r21:   4 r22:   0 r23:   0 r24:   0 r25:   0 r26:   2 r27:   2 r28:   1 
 r29:   1 r30:   0 r31:   0 
 Registers used: 10 out of 35 (28.6%)
@@ -1679,16 +1686,16 @@ Registers used: 10 out of 35 (28.6%)
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :  10 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brne  :  11 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   3 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   2 cpc   :   0 
-cpi   :   5 cpse  :   0 dec   :   3 elpm  :   0 eor   :   0 fmul  :   0 
+cpi   :   6 cpse  :   0 dec   :   3 elpm  :   0 eor   :   0 fmul  :   0 
 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 in    :   2 inc   :   0 
 jmp   :   0 ld    :   2 ldd   :   0 ldi   :  44 lds   :   7 lpm   :   0 
 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 
 mulsu :   0 neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :  22 
-pop   :   9 push  :   9 rcall :  15 ret   :   9 reti  :   4 rjmp  :   8 
+pop   :   9 push  :   9 rcall :  16 ret   :   9 reti  :   4 rjmp  :   8 
 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 
 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   3 sec   :   0 
 seh   :   0 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 
@@ -1700,7 +1707,7 @@ Instructions used: 20 out of 114 (17.5%)
 "ATmega128" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0001fe    378      0    378  131072   0.3%
+[.cseg] 0x000000 0x000204    384      0    384  131072   0.3%
 [.dseg] 0x000100 0x000104      0      4      4    4096   0.1%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 

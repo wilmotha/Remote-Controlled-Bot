@@ -119,10 +119,8 @@ INIT:
 ;***********************************************************
 ;*	Main Program
 ;***********************************************************
-MAIN:
-	
+MAIN
 	in mpr, PIND
-	out PORTB, mpr
 	cpi mpr, 0b11111110
 	brne Bck
 	rcall MoveForward
@@ -144,7 +142,6 @@ TrnL:
 	rcall TurnLeft
 	rjmp	MAIN
 Hlt:
-
 	cpi mpr, 0b10111111
 	brne Fre
 	rcall Halt_Sub

@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 18:52:12 2019
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 19:03:07 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -892,6 +892,7 @@ EQU  MovBckC      00000080
 EQU  TurnRC       000000a0
 EQU  TurnLC       00000090
 EQU  HaltC        000000c8
+EQU  FreezeC      000000f8
 CSEG INIT         00000046
 CSEG LeftBump     000000b7
 CSEG RightBump    000000a2
@@ -919,4 +920,5 @@ CSEG Bck          000000f1
 CSEG TrnR         000000f4
 CSEG TrnL         000000f7
 CSEG Hlt          000000fa
-CSEG Skip2        000000fd
+CSEG Fre          000000fd
+CSEG Skip2        00000100
