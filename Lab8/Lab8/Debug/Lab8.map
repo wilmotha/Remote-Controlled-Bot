@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 18:16:58 2019
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 18:20:25 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -870,6 +870,10 @@ EQU  INT_VECTORS_SIZE 00000046
 DEF  mpr          r16
 DEF  address      r17
 DEF  command      r18
+DEF  waitcnt      r19
+DEF  ilcnt        r20
+DEF  olcnt        r21
+EQU  WTime        000001f4
 EQU  WskrR        00000000
 EQU  WskrL        00000001
 EQU  EngEnR       00000004
@@ -888,26 +892,30 @@ EQU  TurnRC       000000a0
 EQU  TurnLC       00000090
 EQU  HaltC        000000c8
 CSEG INIT         00000046
-CSEG LeftBump     00000090
-CSEG RightBump    0000008f
-CSEG Receive      00000091
+CSEG LeftBump     000000a0
+CSEG RightBump    0000009f
+CSEG Receive      000000a1
 DSEG BUFFER       00000100
-CSEG Resetx       000000af
+CSEG Resetx       000000bf
 CSEG MAIN         0000006f
 CSEG MoveForward  00000070
 CSEG MoveBackward 00000073
 CSEG TurnRight    00000076
 CSEG TurnLeft     00000079
 CSEG Halt_Sub     0000007c
-CSEG GetFreezed   0000007f
-CSEG Freezer      00000080
-CSEG Loop_2       00000087
-CSEG Skip         000000aa
-CSEG Rec2         0000009d
-CSEG Commands     000000b2
-CSEG Skip3        000000ae
-CSEG Bck          000000b6
-CSEG TrnR         000000b9
-CSEG TrnL         000000bc
-CSEG Hlt          000000bf
-CSEG Skip2        000000c2
+CSEG Wait         0000007f
+CSEG Loop         00000082
+CSEG OLoop        00000083
+CSEG ILoop        00000084
+CSEG GetFreezed   0000008e
+CSEG Freezer      00000090
+CSEG Loop_2       00000097
+CSEG Skip         000000ba
+CSEG Rec2         000000ad
+CSEG Commands     000000c2
+CSEG Skip3        000000be
+CSEG Bck          000000c6
+CSEG TrnR         000000c9
+CSEG TrnL         000000cc
+CSEG Hlt          000000cf
+CSEG Skip2        000000d2

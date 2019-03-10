@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 18:16:58 2019
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 18:20:25 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
 C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
@@ -1292,6 +1292,12 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  .def	address = r17
                                  .def	command = r18
                                  
+                                 .def	waitcnt = r19				; Wait Loop Counter
+                                 .def	ilcnt = r20				; Inner Loop Counter
+                                 .def	olcnt = r21				; Outer Loop Counter
+                                 
+                                 .equ	WTime = 500				; Time to wait in wait loop
+                                 
                                  .equ	WskrR = 0				; Right Whisker Input Bit
                                  .equ	WskrL = 1				; Left Whisker Input Bit
                                  .equ	EngEnR = 4				; Right Engine Enable Bit
@@ -1330,13 +1336,13 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  ;Should have Interrupt vectors for:
                                  ;- Left whisker
                                  .org	$0002
-000002 c08d                      		rjmp	LeftBump
+000002 c09d                      		rjmp	LeftBump
                                  ;- Right whisker
                                  .org	$0004
-000004 c08a                      		rjmp	RightBump
+000004 c09a                      		rjmp	RightBump
                                  ;- USART receive
                                  .org	$003C
-00003c c054                      		rjmp	Receive
+00003c c064                      		rjmp	Receive
                                  		; some subroutine?
                                  .org	$0046					; End of Interrupt Vectors
                                  		;rjmp	Receive
@@ -1408,7 +1414,7 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
 00006b e000                      	ldi mpr, $00
 00006c 930d                      	st x+, mpr
 00006d 930c                      	st x, mpr
-00006e d040                      	rcall Resetx
+00006e d050                      	rcall Resetx
                                  
                                  	
                                  ;***********************************************************
@@ -1447,107 +1453,134 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
 00007d bb08                      	out PORTB, mpr
 00007e 9508                      	ret
                                  
-                                 GetFreezed:
+                                 ;----------------------------------------------------------------
+                                 ; Sub:	Wait
+                                 ; Desc:	A wait loop that is 16 + 159975*waitcnt cycles or roughly 
+                                 ;		waitcnt*10ms.  Just initialize wait for the specific amount 
+                                 ;		of time in 10ms intervals. Here is the general eqaution
+                                 ;		for the number of clock cycles in the wait loop:
+                                 ;			((3 * ilcnt + 3) * olcnt + 3) * waitcnt + 13 + call
+                                 ;----------------------------------------------------------------
+                                 Wait:
+00007f 933f                      		push	waitcnt			; Save wait register
+000080 934f                      		push	ilcnt			; Save ilcnt register
+000081 935f                      		push	olcnt			; Save olcnt register
                                  
-00007f 9508                      	ret
+000082 ee50                      Loop:	ldi		olcnt, 224		; load olcnt register
+000083 ee4d                      OLoop:	ldi		ilcnt, 237		; load ilcnt register
+000084 954a                      ILoop:	dec		ilcnt			; decrement ilcnt
+000085 f7f1                      		brne	ILoop			; Continue Inner Loop
+000086 955a                      		dec		olcnt		; decrement olcnt
+000087 f7d9                      		brne	OLoop			; Continue Outer Loop
+000088 953a                      		dec		waitcnt		; Decrement wait 
+000089 f7c1                      		brne	Loop			; Continue Wait loop	
+                                 
+00008a 915f                      		pop		olcnt		; Restore olcnt register
+00008b 914f                      		pop		ilcnt		; Restore ilcnt register
+00008c 913f                      		pop		waitcnt		; Restore wait register
+00008d 9508                      		ret				; Return from subroutine
+                                 
+                                 GetFreezed:
+00008e dff0                      	rcall Wait
+00008f 9508                      	ret
                                  
                                  Freezer:
-000080 9100 009b                 	LDS mpr, UCSR1A
-000082 ff05                      	SBRS mpr, UDRE1
-000083 cffc                      	rjmp Freezer
-000084 e505                      	ldi mpr, 0b01010101
-000085 9300 009c                 	STS UDR1, mpr
+000090 9100 009b                 	LDS mpr, UCSR1A
+000092 ff05                      	SBRS mpr, UDRE1
+000093 cffc                      	rjmp Freezer
+000094 e505                      	ldi mpr, 0b01010101
+000095 9300 009c                 	STS UDR1, mpr
                                  
                                  	Loop_2:
-000087 9100 009b                 		LDS mpr, UCSR1A
-000089 ff06                      		SBRS mpr, TXC1
-00008a cffc                      		rjmp Loop_2
+000097 9100 009b                 		LDS mpr, UCSR1A
+000099 ff06                      		SBRS mpr, TXC1
+00009a cffc                      		rjmp Loop_2
                                  		
-00008b 7f09                      		cbr mpr, TXC1
-00008c 9300 009b                 		STS UCSR1A, mpr
+00009b 7f09                      		cbr mpr, TXC1
+00009c 9300 009b                 		STS UCSR1A, mpr
                                  
                                  
-00008e 9508                      	ret
+00009e 9508                      	ret
                                  
                                  RightBump:
                                  
-00008f 9518                      	reti
+00009f 9518                      	reti
                                  
                                  LeftBump:
                                  	
-000090 9518                      	reti
+0000a0 9518                      	reti
                                  
                                  Receive:
                                  
-000091 9100 009c                 	lds mpr, UDR1
-000093 930c                      	st X, mpr
+0000a1 9100 009c                 	lds mpr, UDR1
+0000a3 930c                      	st X, mpr
                                  	
-000094 9100 009b                 	lds mpr, UCSR1A
-000096 7f08                      	cbr mpr, RXC1
-000097 9300 009b                 	STS UCSR1A, mpr
+0000a4 9100 009b                 	lds mpr, UCSR1A
+0000a6 7f08                      	cbr mpr, RXC1
+0000a7 9300 009b                 	STS UCSR1A, mpr
                                  	
-000099 903c                      	ld r3, X
-00009a e40d                      	ldi mpr, BotAddress
+0000a9 903c                      	ld r3, X
+0000aa e40d                      	ldi mpr, BotAddress
                                  
-00009b 1503                      	cp mpr, r3
-00009c f469                      	brne Skip
+0000ab 1503                      	cp mpr, r3
+0000ac f469                      	brne Skip
                                  	
                                  Rec2:	
-00009d 9100 009b                 	lds   mpr,    UCSR1A
-00009f ff07                      	sbrs  mpr,    RXC1
-0000a0 cffc                      	rjmp  Rec2
-0000a1 9100 009c                 	lds   mpr,    UDR1
-0000a3 930c                      	st    X,      mpr
-0000a4 9100 009b                 	lds   mpr,    UCSR1A
-0000a6 7f08                      	cbr   mpr,    RXC1
-0000a7 9300 009b                 	sts   UCSR1A, mpr
-0000a9 d008                      	rcall Commands
+0000ad 9100 009b                 	lds   mpr,    UCSR1A
+0000af ff07                      	sbrs  mpr,    RXC1
+0000b0 cffc                      	rjmp  Rec2
+0000b1 9100 009c                 	lds   mpr,    UDR1
+0000b3 930c                      	st    X,      mpr
+0000b4 9100 009b                 	lds   mpr,    UCSR1A
+0000b6 7f08                      	cbr   mpr,    RXC1
+0000b7 9300 009b                 	sts   UCSR1A, mpr
+0000b9 d008                      	rcall Commands
                                  
                                  
                                  Skip:
-0000aa e505                      	ldi mpr, 0b01010101
-0000ab 1503                      	cp mpr, r3
-0000ac f409                      	brne Skip3
-0000ad dfd1                      	rcall GetFreezed
+0000ba e505                      	ldi mpr, 0b01010101
+0000bb 1503                      	cp mpr, r3
+0000bc f409                      	brne Skip3
+0000bd dfd0                      	rcall GetFreezed
                                  
                                  Skip3:
-0000ae 9518                      	reti
+0000be 9518                      	reti
                                  	
                                  ResetX:
                                  	;mov XL, YL
                                  	;mov XH, XH
-0000af e0a0                      	ldi XL, low(BUFFER)
-0000b0 e0b1                      	ldi XH, high(BUFFER)
-0000b1 9508                      	ret
+0000bf e0a0                      	ldi XL, low(BUFFER)
+0000c0 e0b1                      	ldi XH, high(BUFFER)
+0000c1 9508                      	ret
                                  
                                  Commands:
                                  	
-0000b2 910c                      	ld mpr, x
+0000c2 910c                      	ld mpr, x
                                  
-0000b3 3b00                      	cpi mpr, MovFwdC
-0000b4 f409                      	brne Bck
-0000b5 dfba                      	rcall MoveForward
+0000c3 3b00                      	cpi mpr, MovFwdC
+0000c4 f409                      	brne Bck
+0000c5 dfaa                      	rcall MoveForward
                                  Bck:
-0000b6 3800                      	cpi mpr, MovBckC
-0000b7 f409                      	brne TrnR
-0000b8 dfba                      	rcall MoveBackward
+0000c6 3800                      	cpi mpr, MovBckC
+0000c7 f409                      	brne TrnR
+0000c8 dfaa                      	rcall MoveBackward
                                  
                                  TrnR:
-0000b9 3a00                      	cpi mpr, TurnRC
-0000ba f409                      	brne TrnL
-0000bb dfba                      	rcall TurnRight
+0000c9 3a00                      	cpi mpr, TurnRC
+0000ca f409                      	brne TrnL
+0000cb dfaa                      	rcall TurnRight
                                  
                                  TrnL:
-0000bc 3900                      	cpi mpr, TurnLC
-0000bd f409                      	brne Hlt
-0000be dfba                      	rcall TurnLeft
+0000cc 3900                      	cpi mpr, TurnLC
+0000cd f409                      	brne Hlt
+0000ce dfaa                      	rcall TurnLeft
                                  Hlt:
-0000bf 3c08                      	cpi mpr, HaltC
-0000c0 f409                      	brne Skip2
-0000c1 dfba                      	rcall Halt_Sub
+0000cf 3c08                      	cpi mpr, HaltC
+0000d0 f409                      	brne Skip2
+0000d1 dfaa                      	rcall Halt_Sub
                                  Skip2:
-0000c2 dfec                      	rcall ResetX
-0000c3 9508                      ret
+0000d2 dfec                      	rcall ResetX
+0000d3 9508                      ret
                                  ;***********************************************************
                                  ;*	Stored Program Data
                                  ;***********************************************************
@@ -1578,38 +1611,38 @@ counted separately from r26..r31 here.
 "ATmega128" register use summary:
 x  :   6 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   3 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  69 r17:   0 r18:   0 r19:   0 r20:   0 
-r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   2 r27:   2 r28:   1 
+r13:   0 r14:   0 r15:   0 r16:  69 r17:   0 r18:   0 r19:   3 r20:   4 
+r21:   4 r22:   0 r23:   0 r24:   0 r25:   0 r26:   2 r27:   2 r28:   1 
 r29:   1 r30:   0 r31:   0 
-Registers used: 7 out of 35 (20.0%)
+Registers used: 10 out of 35 (28.6%)
 
 "ATmega128" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   7 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brne  :  10 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   3 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   2 cpc   :   0 
-cpi   :   5 cpse  :   0 dec   :   0 elpm  :   0 eor   :   0 fmul  :   0 
+cpi   :   5 cpse  :   0 dec   :   3 elpm  :   0 eor   :   0 fmul  :   0 
 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 
-jmp   :   0 ld    :   2 ldd   :   0 ldi   :  28 lds   :   7 lpm   :   0 
+jmp   :   0 ld    :   2 ldd   :   0 ldi   :  30 lds   :   7 lpm   :   0 
 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 
 mulsu :   0 neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :  12 
-pop   :   0 push  :   0 rcall :   9 ret   :   9 reti  :   3 rjmp  :   8 
+pop   :   3 push  :   3 rcall :  10 ret   :  10 reti  :   3 rjmp  :   8 
 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 
 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   3 sec   :   0 
 seh   :   0 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 
 sev   :   0 sez   :   0 sleep :   0 spm   :   0 st    :   4 std   :   0 
 sts   :  10 sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
 
-Instructions used: 16 out of 114 (14.0%)
+Instructions used: 19 out of 114 (16.7%)
 
 "ATmega128" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000188    260      0    260  131072   0.2%
+[.cseg] 0x000000 0x0001a8    292      0    292  131072   0.2%
 [.dseg] 0x000100 0x000104      0      4      4    4096   0.1%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 

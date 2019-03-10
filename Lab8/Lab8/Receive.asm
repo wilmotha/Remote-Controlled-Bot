@@ -23,6 +23,12 @@
 .def	address = r17
 .def	command = r18
 
+.def	waitcnt = r19				; Wait Loop Counter
+.def	ilcnt = r20				; Inner Loop Counter
+.def	olcnt = r21				; Outer Loop Counter
+
+.equ	WTime = 500				; Time to wait in wait loop
+
 .equ	WskrR = 0				; Right Whisker Input Bit
 .equ	WskrL = 1				; Left Whisker Input Bit
 .equ	EngEnR = 4				; Right Engine Enable Bit
@@ -178,8 +184,35 @@ Halt_Sub:
 	out PORTB, mpr
 	ret
 
-GetFreezed:
+;----------------------------------------------------------------
+; Sub:	Wait
+; Desc:	A wait loop that is 16 + 159975*waitcnt cycles or roughly 
+;		waitcnt*10ms.  Just initialize wait for the specific amount 
+;		of time in 10ms intervals. Here is the general eqaution
+;		for the number of clock cycles in the wait loop:
+;			((3 * ilcnt + 3) * olcnt + 3) * waitcnt + 13 + call
+;----------------------------------------------------------------
+Wait:
+		push	waitcnt			; Save wait register
+		push	ilcnt			; Save ilcnt register
+		push	olcnt			; Save olcnt register
 
+Loop:	ldi		olcnt, 224		; load olcnt register
+OLoop:	ldi		ilcnt, 237		; load ilcnt register
+ILoop:	dec		ilcnt			; decrement ilcnt
+		brne	ILoop			; Continue Inner Loop
+		dec		olcnt		; decrement olcnt
+		brne	OLoop			; Continue Outer Loop
+		dec		waitcnt		; Decrement wait 
+		brne	Loop			; Continue Wait loop	
+
+		pop		olcnt		; Restore olcnt register
+		pop		ilcnt		; Restore ilcnt register
+		pop		waitcnt		; Restore wait register
+		ret				; Return from subroutine
+
+GetFreezed:
+	rcall Wait
 	ret
 
 Freezer:
