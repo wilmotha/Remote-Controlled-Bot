@@ -45,18 +45,18 @@
 ;***********************************************************
 .org	$0000					; Beginning of IVs
 		rjmp 	INIT			; Reset interrupt
-.org	$0002
-		rjmp	MoveForward
-.org	$0004
-		rjmp	MoveBackward
-.org	$000A
-		rjmp	TurnRight
-.org	$000C
-		rjmp	TurnLeft
-.org	$000E
-		rjmp	Halt_Sub
-.org	$0010
-		rjmp	Freeze
+;.org	$0002
+		;rjmp	MoveForward
+;.org	$0004
+;		rjmp	MoveBackward
+;.org	$000A
+;		rjmp	TurnRight
+;.org	$000C
+;		rjmp	TurnLeft
+;.org	$000E
+;		rjmp	Halt_Sub
+;.org	$0010
+;		rjmp	Freeze
 
 .org	$0046					; End of Interrupt Vectors
 
@@ -104,14 +104,14 @@ INIT:
 	sts UCSR1C, mpr
 
 	;Buttons Interupts
-	clr mpr
-	ldi mpr, 0b00101010
-	sts EICRA, mpr
-	ldi mpr, 0b00101010
-	out EICRB, mpr
+	;clr mpr
+	;ldi mpr, 0b00101010
+	;sts EICRA, mpr
+	;ldi mpr, 0b00101010
+	;out EICRB, mpr
 
-	ldi mpr, 0b00110111
-	out EIMSK, mpr
+	;ldi mpr, 0b00110111
+	;out EIMSK, mpr
 
 	sei
 	;Other
@@ -121,6 +121,35 @@ INIT:
 ;***********************************************************
 MAIN:
 	
+	in mpr, PIND
+	out PORTB, mpr
+	cpi mpr, 0b11111110
+	brne Bck
+	rcall MoveForward
+	rjmp	MAIN
+Bck:
+	cpi mpr, 0b11111101
+	brne TrnR
+	rcall MoveBackward
+	rjmp	MAIN
+
+TrnR:
+	cpi mpr, 0b11101111
+	brne TrnL
+	rcall TurnRight
+	rjmp	MAIN
+TrnL:
+	cpi mpr, 0b11011111
+	brne Hlt
+	rcall TurnLeft
+	rjmp	MAIN
+Hlt:
+
+	cpi mpr, 0b10111111
+	brne Skip2
+	rcall Halt_Sub
+	rjmp	MAIN
+Skip2:
 	
 	rjmp	MAIN
 
@@ -135,7 +164,7 @@ MoveForward:
 
 	ldi mpr, $FF
 	out EIFR, mpr
-	reti
+	ret
 
 MoveBackward:
 
@@ -145,7 +174,7 @@ MoveBackward:
 
 	ldi mpr, $FF
 	out EIFR, mpr
-	reti
+	ret
 
 TurnRight:
 
@@ -155,7 +184,7 @@ TurnRight:
 
 	ldi mpr, $FF
 	out EIFR, mpr
-	reti
+	ret
 
 TurnLeft:
 	ldi transfer, TurnL
@@ -164,7 +193,7 @@ TurnLeft:
 
 	ldi mpr, $FF
 	out EIFR, mpr
-	reti
+	ret
 
 Halt_Sub:
 	ldi transfer, Halt
@@ -173,11 +202,11 @@ Halt_Sub:
 
 	ldi mpr, $FF
 	out EIFR, mpr
-	reti
+	ret
 
 Freeze:
 
-	reti
+	ret
 
 Transmit:
 	LDS mpr, UCSR1A
