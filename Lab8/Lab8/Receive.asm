@@ -53,7 +53,7 @@
 .equ	TurnRC =   ($80|1<<(EngDirL-1))						;0b10100000 Turn Right Action Code
 .equ	TurnLC =   ($80|1<<(EngDirR-1))						;0b10010000 Turn Left Action Code
 .equ	HaltC =    ($80|1<<(EngEnR-1)|1<<(EngEnL-1))		;0b11001000 Halt Action Code
-
+.equ	FreezeC = 0b11111000
 ;***********************************************************
 ;*	Start of Code Segment
 ;***********************************************************
@@ -220,12 +220,15 @@ GetFreezed:
 	ret
 
 Freezer:
+	;ldi mpr, 0b11111111 ;remove this just for testing
+	;out PORTB, mpr
+
 	LDS mpr, UCSR1A
 	SBRS mpr, UDRE1
 	rjmp Freezer
 	ldi mpr, 0b01010101
 	STS UDR1, mpr
-
+	
 	Loop_2:
 		LDS mpr, UCSR1A
 		SBRS mpr, TXC1
@@ -365,8 +368,12 @@ TrnL:
 	rcall TurnLeft
 Hlt:
 	cpi mpr, HaltC
-	brne Skip2
+	brne Fre
 	rcall Halt_Sub
+Fre:
+	cpi mpr, FreezeC
+	brne Skip2
+	rcall Freezer
 Skip2:
 	rcall ResetX
 ret

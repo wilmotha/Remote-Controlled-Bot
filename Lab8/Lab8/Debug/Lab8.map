@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm Sat Mar 09 19:02:05 2019
+=======
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 19:03:07 2019
+>>>>>>> f0cd55046b063b37cbd895a1b17bc467726a589a
 
 
 EQU  SIGNATURE_000 0000001e
@@ -869,18 +873,32 @@ EQU  SPMRaddr     00000044
 EQU  INT_VECTORS_SIZE 00000046
 DEF  mpr          r16
 DEF  address      r17
-DEF  transfer     r18
+DEF  command      r18
+DEF  waitcnt      r19
+DEF  ilcnt        r20
+DEF  olcnt        r21
+EQU  FTime        000000ff
+EQU  WTime        00000064
+EQU  WskrR        00000000
+EQU  WskrL        00000001
 EQU  EngEnR       00000004
 EQU  EngEnL       00000007
 EQU  EngDirR      00000005
 EQU  EngDirL      00000006
-EQU  MovFwd       000000b0
-EQU  MovBck       00000080
-EQU  TurnR        000000a0
-EQU  TurnL        00000090
-EQU  Halt         000000c8
-EQU  Freeze       000000f8
+EQU  BotAddress   0000004d
+EQU  MovFwd       00000060
+EQU  MovBck       00000000
+EQU  TurnR        00000040
+EQU  TurnL        00000020
+EQU  Halt         00000090
+EQU  MovFwdC      000000b0
+EQU  MovBckC      00000080
+EQU  TurnRC       000000a0
+EQU  TurnLC       00000090
+EQU  HaltC        000000c8
+EQU  FreezeC      000000f8
 CSEG INIT         00000046
+<<<<<<< HEAD
 CSEG MAIN         00000061
 CSEG Bck          00000067
 CSEG MoveForward  0000007c
@@ -897,3 +915,33 @@ CSEG Freeze_sub   0000008b
 CSEG Transmit     0000008e
 CSEG Loop_1       00000094
 CSEG Loop_2       0000009a
+=======
+CSEG LeftBump     000000b7
+CSEG RightBump    000000a2
+CSEG Receive      000000cc
+DSEG BUFFER       00000100
+CSEG Resetx       000000ea
+CSEG MAIN         0000006f
+CSEG MoveForward  00000070
+CSEG MoveBackward 00000073
+CSEG TurnRight    00000076
+CSEG TurnLeft     00000079
+CSEG Halt_Sub     0000007c
+CSEG Wait         0000007f
+CSEG Loop         00000082
+CSEG OLoop        00000083
+CSEG ILoop        00000084
+CSEG GetFreezed   0000008e
+CSEG Freezer      00000093
+CSEG Loop_2       0000009a
+CSEG Skip         000000e5
+CSEG Rec2         000000d8
+CSEG Commands     000000ed
+CSEG Skip3        000000e9
+CSEG Bck          000000f1
+CSEG TrnR         000000f4
+CSEG TrnL         000000f7
+CSEG Hlt          000000fa
+CSEG Fre          000000fd
+CSEG Skip2        00000100
+>>>>>>> f0cd55046b063b37cbd895a1b17bc467726a589a
