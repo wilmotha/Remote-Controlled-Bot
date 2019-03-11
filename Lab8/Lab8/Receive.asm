@@ -213,10 +213,19 @@ ILoop:	dec		ilcnt			; decrement ilcnt
 		reti				; Return from subroutine
 
 GetFreezed:
+	push command
+	in command, PORTB
+	
+	rcall Halt_sub
+
 	ldi	waitcnt, FTime	; Wait for 1 second
 	rcall Wait
 	ldi	waitcnt, FTime
 	rcall Wait
+
+	out PORTB, command
+	pop command
+
 	ret
 
 Freezer:		;this function transmits the freeze value is tranmitted to the other bots
