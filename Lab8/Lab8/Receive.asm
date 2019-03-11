@@ -119,16 +119,6 @@ INIT:
 	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)	;sets the 8 bit rate and 2 stop bits
 	sts UCSR1C, mpr
 
-	;ldi mpr, $A0
-	;sts UBRR1L, mpr
-	;ldi mpr, $01
-	;sts UBRR1H, mpr
-		;Enable receiver and enable receive interrupts
-	;ldi mpr, 0b10010000
-	;sts UCSR1C, mpr
-		;Set frame format: 8 data bits, 2 stop bits
-	;ldi mpr, 0b00001110
-	
 	;External Interrupts
 		;Set the External Interrupt Mask
 	ldi mpr, 0b00000011		;set up the two buttons as inputs or as bumpers
@@ -213,10 +203,17 @@ ILoop:	dec		ilcnt			; decrement ilcnt
 		reti				; Return from subroutine
 
 GetFreezed:
+	push address
+	in address, PORTB
+	rcall Halt_Sub
+
 	ldi	waitcnt, FTime	; Wait for 1 second
 	rcall Wait
 	ldi	waitcnt, FTime
 	rcall Wait
+
+	out PORTB, address
+	pop address
 	ret
 
 Freezer:		;this function transmits the freeze value is tranmitted to the other bots
@@ -272,7 +269,7 @@ RightBump:
 	reti
 
 LeftBump:
-	push	mpr			; Save mpr register
+		push	mpr			; Save mpr register
 		push	waitcnt			; Save wait register
 		in		mpr, SREG	; Save program state
 		push	mpr			;
