@@ -272,7 +272,7 @@ RightBump:
 	reti
 
 LeftBump:
-	push	mpr			; Save mpr register
+		push	mpr			; Save mpr register
 		push	waitcnt			; Save wait register
 		in		mpr, SREG	; Save program state
 		push	mpr			;
