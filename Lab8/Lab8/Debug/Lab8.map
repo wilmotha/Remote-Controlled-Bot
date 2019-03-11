@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Mon Mar 11 14:09:16 2019
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Mon Mar 11 14:31:55 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -882,7 +882,7 @@ EQU  EngEnR       00000004
 EQU  EngEnL       00000007
 EQU  EngDirR      00000005
 EQU  EngDirL      00000006
-EQU  BotAddress   0000005d
+EQU  BotAddress   0000004d
 EQU  MovFwd       00000060
 EQU  MovBck       00000000
 EQU  TurnR        00000040
@@ -895,32 +895,32 @@ EQU  TurnLC       00000090
 EQU  HaltC        000000c8
 EQU  FreezeC      000000f8
 CSEG INIT         00000046
-CSEG LeftBump     000000cd
-CSEG RightBump    000000b2
-CSEG Receive      000000e8
+CSEG LeftBump     000000c8
+CSEG RightBump    000000ad
+CSEG Receive      000000e3
 DSEG BUFFER       00000100
-CSEG Resetx       00000106
-CSEG MAIN         00000070
-CSEG MoveForward  00000071
-CSEG MoveBackward 00000074
-CSEG TurnRight    00000077
-CSEG TurnLeft     0000007a
-CSEG Halt_Sub     0000007d
-CSEG Wait         00000080
-CSEG Loop         00000083
-CSEG OLoop        00000084
-CSEG ILoop        00000085
-CSEG GetFreezed   0000008f
-CSEG FreezeForever 0000009c
-CSEG Freezer      0000009d
-CSEG Loop_2       000000a7
-CSEG Skip         00000101
-CSEG Rec2         000000f4
-CSEG Commands     00000109
-CSEG Skip3        00000105
-CSEG Bck          0000010d
-CSEG TrnR         00000110
-CSEG TrnL         00000113
-CSEG Hlt          00000116
-CSEG Fre          00000119
-CSEG Skip2        0000011c
+CSEG Resetx       00000101
+CSEG MAIN         0000006b
+CSEG MoveForward  0000006c
+CSEG MoveBackward 0000006f
+CSEG TurnRight    00000072
+CSEG TurnLeft     00000075
+CSEG Halt_Sub     00000078
+CSEG Wait         0000007b
+CSEG Loop         0000007e
+CSEG OLoop        0000007f
+CSEG ILoop        00000080
+CSEG GetFreezed   0000008a
+CSEG FreezeForever 00000097
+CSEG Freezer      00000098
+CSEG Loop_2       000000a2
+CSEG Skip         000000fc
+CSEG Rec2         000000ef
+CSEG Commands     00000104
+CSEG Skip3        00000100
+CSEG Bck          00000108
+CSEG TrnR         0000010b
+CSEG TrnL         0000010e
+CSEG Hlt          00000111
+CSEG Fre          00000114
+CSEG Skip2        00000117

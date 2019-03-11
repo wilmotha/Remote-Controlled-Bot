@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Mon Mar 11 14:09:16 2019
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Mon Mar 11 14:31:55 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
 C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
@@ -1307,7 +1307,7 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  .equ	EngDirR = 5				; Right Engine Direction Bit
                                  .equ	EngDirL = 6				; Left Engine Direction Bit
                                  
-                                 .equ	BotAddress = $5D;(Enter your robot's address here (8 bits))
+                                 .equ	BotAddress = $4D;(Enter your robot's address here (8 bits))
                                  
                                  ;/////////////////////////////////////////////////////////////
                                  ;These macros are the values to make the TekBot Move.
@@ -1338,13 +1338,13 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  ;Should have Interrupt vectors for:
                                  ;- Left whisker
                                  .org	$0002
-000002 c0ca                      		rjmp	LeftBump
+000002 c0c5                      		rjmp	LeftBump
                                  ;- Right whisker
                                  .org	$0004
-000004 c0ad                      		rjmp	RightBump
+000004 c0a8                      		rjmp	RightBump
                                  ;- USART receive
                                  .org	$003C
-00003c c0ab                      		rjmp	Receive
+00003c c0a6                      		rjmp	Receive
                                  		; some subroutine?
                                  .org	$0046					; End of Interrupt Vectors
                                  		;rjmp	Receive
@@ -1401,12 +1401,7 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  	;Other
 000068 e0a0                      	ldi XL, low(BUFFER)		;set up X and Y to point to the buffer which stores the value that is received
 000069 e0b1                      	ldi XH, high(BUFFER)
-00006a e0c0                      	ldi YL, low(BUFFER)
-00006b e0d1                      	ldi YH, high(BUFFER)
-00006c e000                      	ldi mpr, $00
-00006d 930d                      	st x+, mpr				;clears the value in the buffer
-00006e 930c                      	st x, mpr
-00006f d096                      	rcall Resetx			;resets the value that x pointing to
+00006a d096                      	rcall Resetx			;resets the value that x pointing to
                                  
                                  	
                                  ;***********************************************************
@@ -1415,35 +1410,35 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  MAIN:
                                  	
                                  
-000070 cfff                      	rjmp	MAIN			;infinity loops so that it waits for just the interrupts
+00006b cfff                      	rjmp	MAIN			;infinity loops so that it waits for just the interrupts
                                  
                                  ;***********************************************************
                                  ;*	Functions and Subroutines
                                  ;***********************************************************
                                  MoveForward:
-000071 e600                      	ldi mpr, MovFwd			;loads the value of the command into port B
-000072 bb08                      	out PORTB, mpr
-000073 9508                      	ret
+00006c e600                      	ldi mpr, MovFwd			;loads the value of the command into port B
+00006d bb08                      	out PORTB, mpr
+00006e 9508                      	ret
                                  
                                  MoveBackward:				
-000074 e000                      	ldi mpr, MovBck			;loads the value of the command into port B
-000075 bb08                      	out PORTB, mpr
-000076 9508                      	ret
+00006f e000                      	ldi mpr, MovBck			;loads the value of the command into port B
+000070 bb08                      	out PORTB, mpr
+000071 9508                      	ret
                                  
                                  TurnRight:
-000077 e400                      	ldi mpr, TurnR			;loads the value of the command into port B
-000078 bb08                      	out PORTB, mpr
-000079 9508                      	ret
+000072 e400                      	ldi mpr, TurnR			;loads the value of the command into port B
+000073 bb08                      	out PORTB, mpr
+000074 9508                      	ret
                                  
                                  TurnLeft:
-00007a e200                      	ldi mpr, TurnL			;loads the value of the command into port B
-00007b bb08                      	out PORTB, mpr
-00007c 9508                      	ret
+000075 e200                      	ldi mpr, TurnL			;loads the value of the command into port B
+000076 bb08                      	out PORTB, mpr
+000077 9508                      	ret
                                  
                                  Halt_Sub:
-00007d e900                      	ldi mpr, Halt			;loads the value of the command into port B
-00007e bb08                      	out PORTB, mpr
-00007f 9508                      	ret
+000078 e900                      	ldi mpr, Halt			;loads the value of the command into port B
+000079 bb08                      	out PORTB, mpr
+00007a 9508                      	ret
                                  
                                  ;----------------------------------------------------------------
                                  ; Sub:	Wait
@@ -1454,222 +1449,222 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  ;			((3 * ilcnt + 3) * olcnt + 3) * waitcnt + 13 + call
                                  ;----------------------------------------------------------------
                                  Wait:
-000080 933f                      		push	waitcnt			; Save wait register
-000081 934f                      		push	ilcnt			; Save ilcnt register
-000082 935f                      		push	olcnt			; Save olcnt register
+00007b 933f                      		push	waitcnt			; Save wait register
+00007c 934f                      		push	ilcnt			; Save ilcnt register
+00007d 935f                      		push	olcnt			; Save olcnt register
                                  
-000083 ee50                      Loop:	ldi		olcnt, 224		; load olcnt register
-000084 ee4d                      OLoop:	ldi		ilcnt, 237		; load ilcnt register
-000085 954a                      ILoop:	dec		ilcnt			; decrement ilcnt
-000086 f7f1                      		brne	ILoop			; Continue Inner Loop
-000087 955a                      		dec		olcnt		; decrement olcnt
-000088 f7d9                      		brne	OLoop			; Continue Outer Loop
-000089 953a                      		dec		waitcnt		; Decrement wait 
-00008a f7c1                      		brne	Loop			; Continue Wait loop	
+00007e ee50                      Loop:	ldi		olcnt, 224		; load olcnt register
+00007f ee4d                      OLoop:	ldi		ilcnt, 237		; load ilcnt register
+000080 954a                      ILoop:	dec		ilcnt			; decrement ilcnt
+000081 f7f1                      		brne	ILoop			; Continue Inner Loop
+000082 955a                      		dec		olcnt		; decrement olcnt
+000083 f7d9                      		brne	OLoop			; Continue Outer Loop
+000084 953a                      		dec		waitcnt		; Decrement wait 
+000085 f7c1                      		brne	Loop			; Continue Wait loop	
                                  
-00008b 915f                      		pop		olcnt		; Restore olcnt register
-00008c 914f                      		pop		ilcnt		; Restore ilcnt register
-00008d 913f                      		pop		waitcnt		; Restore wait register
-00008e 9518                      		reti				; Return from subroutine
+000086 915f                      		pop		olcnt		; Restore olcnt register
+000087 914f                      		pop		ilcnt		; Restore ilcnt register
+000088 913f                      		pop		waitcnt		; Restore wait register
+000089 9518                      		reti				; Return from subroutine
                                  
                                  GetFreezed:
-00008f 932f                      	push command
-000090 b328                      	in command, PORTB
+00008a 932f                      	push command
+00008b b328                      	in command, PORTB
                                  	
-000091 9563                      	inc Fcount
+00008c 9563                      	inc Fcount
                                  
-000092 dfea                      	rcall Halt_sub
+00008d dfea                      	rcall Halt_sub
                                  
-000093 3063                      	cpi Fcount, 3
-000094 f039                      	breq FreezeForever
+00008e 3063                      	cpi Fcount, 3
+00008f f039                      	breq FreezeForever
                                  
-000095 ef3f                      	ldi	waitcnt, FTime	; Wait for 1 second
-000096 dfe9                      	rcall Wait
-000097 ef3f                      	ldi	waitcnt, FTime
-000098 dfe7                      	rcall Wait
+000090 ef3f                      	ldi	waitcnt, FTime	; Wait for 1 second
+000091 dfe9                      	rcall Wait
+000092 ef3f                      	ldi	waitcnt, FTime
+000093 dfe7                      	rcall Wait
                                  
-000099 bb28                      	out PORTB, command
-00009a 912f                      	pop command
+000094 bb28                      	out PORTB, command
+000095 912f                      	pop command
                                  
-00009b 9508                      	ret
+000096 9508                      	ret
                                  
                                  FreezeForever:
-00009c cfff                      	rjmp FreezeForever
+000097 cfff                      	rjmp FreezeForever
                                  
                                  Freezer:		;this function transmits the freeze value is tranmitted to the other bots
                                  	;ldi mpr, 0b11111111 ;remove this just for testing
                                  	;out PORTB, mpr
                                  
-00009d e808                      	ldi mpr, (1<<RXCIE1)|(0<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
-00009e 9300 009a                 	sts UCSR1B, mpr
+000098 e808                      	ldi mpr, (1<<RXCIE1)|(0<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+000099 9300 009a                 	sts UCSR1B, mpr
                                  
-0000a0 9100 009b                 	LDS mpr, UCSR1A			;loads the value UCSR1A into mpr
-0000a2 ff05                      	SBRS mpr, UDRE1			;checks if the UDRE1 bit says that the buffer is cleared
-0000a3 cff9                      	rjmp Freezer			;if it is not cleared then it keeps looping until the it is
-0000a4 e505                      	ldi mpr, 0b01010101		;if the buffer is cleared then the command is loaded into UDR1 to be transmitted
-0000a5 9300 009c                 	STS UDR1, mpr			
+00009b 9100 009b                 	LDS mpr, UCSR1A			;loads the value UCSR1A into mpr
+00009d ff05                      	SBRS mpr, UDRE1			;checks if the UDRE1 bit says that the buffer is cleared
+00009e cff9                      	rjmp Freezer			;if it is not cleared then it keeps looping until the it is
+00009f e505                      	ldi mpr, 0b01010101		;if the buffer is cleared then the command is loaded into UDR1 to be transmitted
+0000a0 9300 009c                 	STS UDR1, mpr			
                                  
                                  
                                  	Loop_2:
-0000a7 9100 009b                 		LDS mpr, UCSR1A		;checks if the transmit is done 
-0000a9 ff06                      		SBRS mpr, TXC1
-0000aa cffc                      		rjmp Loop_2			; if the transmit is not done then it loops until it is
+0000a2 9100 009b                 		LDS mpr, UCSR1A		;checks if the transmit is done 
+0000a4 ff06                      		SBRS mpr, TXC1
+0000a5 cffc                      		rjmp Loop_2			; if the transmit is not done then it loops until it is
                                  		
-0000ab 7f09                      		cbr mpr, TXC1		;clears the transmit bit in UCSR1A
-0000ac 9300 009b                 		STS UCSR1A, mpr
+0000a6 7f09                      		cbr mpr, TXC1		;clears the transmit bit in UCSR1A
+0000a7 9300 009b                 		STS UCSR1A, mpr
                                  
-0000ae e908                      	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
-0000af 9300 009a                 	sts UCSR1B, mpr
+0000a9 e908                      	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+0000aa 9300 009a                 	sts UCSR1B, mpr
                                  
-0000b1 9508                      	ret
+0000ac 9508                      	ret
                                  
                                  RightBump:
-0000b2 930f                      		push	mpr			; Save mpr register
-0000b3 933f                      		push	waitcnt			; Save wait register
-0000b4 b70f                      		in		mpr, SREG	; Save program state
-0000b5 930f                      		push	mpr			;
+0000ad 930f                      		push	mpr			; Save mpr register
+0000ae 933f                      		push	waitcnt			; Save wait register
+0000af b70f                      		in		mpr, SREG	; Save program state
+0000b0 930f                      		push	mpr			;
                                  
-0000b6 e108                      		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
-0000b7 9300 009a                 		sts UCSR1B, mpr
+0000b1 e108                      		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+0000b2 9300 009a                 		sts UCSR1B, mpr
                                  
                                  		; Move Backwards for a second
-0000b9 e000                      		ldi		mpr, MovBck	; Load Move Backward command
-0000ba bb08                      		out		PORTB, mpr	; Send command to port
-0000bb e634                      		ldi		waitcnt, WTime	; Wait for 1 second
-0000bc dfc3                      		rcall	Wait			; Call wait function
+0000b4 e000                      		ldi		mpr, MovBck	; Load Move Backward command
+0000b5 bb08                      		out		PORTB, mpr	; Send command to port
+0000b6 e634                      		ldi		waitcnt, WTime	; Wait for 1 second
+0000b7 dfc3                      		rcall	Wait			; Call wait function
                                  
                                  		; Turn left for a second
-0000bd e200                      		ldi		mpr, TurnL	; Load Turn Left Command
-0000be bb08                      		out		PORTB, mpr	; Send command to port
-0000bf e634                      		ldi		waitcnt, WTime	; Wait for 1 second
-0000c0 dfbf                      		rcall	Wait			; Call wait function
+0000b8 e200                      		ldi		mpr, TurnL	; Load Turn Left Command
+0000b9 bb08                      		out		PORTB, mpr	; Send command to port
+0000ba e634                      		ldi		waitcnt, WTime	; Wait for 1 second
+0000bb dfbf                      		rcall	Wait			; Call wait function
                                  
                                  		; Move Forward again	
-0000c1 e600                      		ldi		mpr, MovFwd	; Load Move Forward command
-0000c2 bb08                      		out		PORTB, mpr	; Send command to port
+0000bc e600                      		ldi		mpr, MovFwd	; Load Move Forward command
+0000bd bb08                      		out		PORTB, mpr	; Send command to port
                                  
-0000c3 ef0f                      		ldi mpr, $FF
-0000c4 bf08                      		out EIFR, mpr
+0000be ef0f                      		ldi mpr, $FF
+0000bf bf08                      		out EIFR, mpr
                                  
-0000c5 e908                      		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
-0000c6 9300 009a                 		sts UCSR1B, mpr
+0000c0 e908                      		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+0000c1 9300 009a                 		sts UCSR1B, mpr
                                  
-0000c8 910f                      		pop		mpr		; Restore program state
-0000c9 bf0f                      		out		SREG, mpr	;
-0000ca 913f                      		pop		waitcnt		; Restore wait register
-0000cb 910f                      		pop		mpr		; Restore mpr
-0000cc 9518                      	reti
+0000c3 910f                      		pop		mpr		; Restore program state
+0000c4 bf0f                      		out		SREG, mpr	;
+0000c5 913f                      		pop		waitcnt		; Restore wait register
+0000c6 910f                      		pop		mpr		; Restore mpr
+0000c7 9518                      	reti
                                  
                                  LeftBump:
-0000cd 930f                      		push	mpr			; Save mpr register
-0000ce 933f                      		push	waitcnt			; Save wait register
-0000cf b70f                      		in		mpr, SREG	; Save program state
-0000d0 930f                      		push	mpr			;
+0000c8 930f                      		push	mpr			; Save mpr register
+0000c9 933f                      		push	waitcnt			; Save wait register
+0000ca b70f                      		in		mpr, SREG	; Save program state
+0000cb 930f                      		push	mpr			;
                                  
-0000d1 e108                      		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
-0000d2 9300 009a                 		sts UCSR1B, mpr
+0000cc e108                      		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+0000cd 9300 009a                 		sts UCSR1B, mpr
                                  
                                  		; Move Backwards for a second
-0000d4 e000                      		ldi		mpr, MovBck	; Load Move Backward command
-0000d5 bb08                      		out		PORTB, mpr	; Send command to port
-0000d6 e634                      		ldi		waitcnt, WTime	; Wait for 1 second
-0000d7 dfa8                      		rcall	Wait			; Call wait function
+0000cf e000                      		ldi		mpr, MovBck	; Load Move Backward command
+0000d0 bb08                      		out		PORTB, mpr	; Send command to port
+0000d1 e634                      		ldi		waitcnt, WTime	; Wait for 1 second
+0000d2 dfa8                      		rcall	Wait			; Call wait function
                                  
                                  		; Turn right for a second
-0000d8 e400                      		ldi		mpr, TurnR	; Load Turn Left Command
-0000d9 bb08                      		out		PORTB, mpr	; Send command to port
-0000da e634                      		ldi		waitcnt, WTime	; Wait for 1 second
-0000db dfa4                      		rcall	Wait			; Call wait function
+0000d3 e400                      		ldi		mpr, TurnR	; Load Turn Left Command
+0000d4 bb08                      		out		PORTB, mpr	; Send command to port
+0000d5 e634                      		ldi		waitcnt, WTime	; Wait for 1 second
+0000d6 dfa4                      		rcall	Wait			; Call wait function
                                  
                                  		; Move Forward again	
-0000dc e600                      		ldi		mpr, MovFwd	; Load Move Forward command
-0000dd bb08                      		out		PORTB, mpr	; Send command to port
+0000d7 e600                      		ldi		mpr, MovFwd	; Load Move Forward command
+0000d8 bb08                      		out		PORTB, mpr	; Send command to port
                                  		
-0000de ef0f                      		ldi mpr, $FF
-0000df bf08                      		out EIFR, mpr
+0000d9 ef0f                      		ldi mpr, $FF
+0000da bf08                      		out EIFR, mpr
                                  
-0000e0 e908                      		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
-0000e1 9300 009a                 		sts UCSR1B, mpr
+0000db e908                      		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+0000dc 9300 009a                 		sts UCSR1B, mpr
                                  
-0000e3 910f                      		pop		mpr		; Restore program state
-0000e4 bf0f                      		out		SREG, mpr	;
-0000e5 913f                      		pop		waitcnt		; Restore wait register
-0000e6 910f                      		pop		mpr		; Restore mpr
-0000e7 9518                      		reti
+0000de 910f                      		pop		mpr		; Restore program state
+0000df bf0f                      		out		SREG, mpr	;
+0000e0 913f                      		pop		waitcnt		; Restore wait register
+0000e1 910f                      		pop		mpr		; Restore mpr
+0000e2 9518                      		reti
                                  
                                  Receive:
                                  
-0000e8 9100 009c                 	lds mpr, UDR1		;loads the received value into the buffer
-0000ea 930c                      	st X, mpr
+0000e3 9100 009c                 	lds mpr, UDR1		;loads the received value into the buffer
+0000e5 930c                      	st X, mpr
                                  	
-0000eb 9100 009b                 	lds mpr, UCSR1A		;clears the receive done bit in UCSR1A
-0000ed 7f08                      	cbr mpr, RXC1
-0000ee 9300 009b                 	STS UCSR1A, mpr
+0000e6 9100 009b                 	lds mpr, UCSR1A		;clears the receive done bit in UCSR1A
+0000e8 7f08                      	cbr mpr, RXC1
+0000e9 9300 009b                 	STS UCSR1A, mpr
                                  	
-0000f0 903c                      	ld r3, X			;checks if the botID is correct one
-0000f1 e50d                      	ldi mpr, BotAddress
+0000eb 903c                      	ld r3, X			;checks if the botID is correct one
+0000ec e40d                      	ldi mpr, BotAddress
                                  
-0000f2 1503                      	cp mpr, r3			;if the other botID is not correct it jumps to Skip
-0000f3 f469                      	brne Skip
+0000ed 1503                      	cp mpr, r3			;if the other botID is not correct it jumps to Skip
+0000ee f469                      	brne Skip
                                  	
                                  Rec2:	
-0000f4 9100 009b                 	lds   mpr,    UCSR1A		;checks if the RXC1 bits which means it is done receive is done recieving
-0000f6 ff07                      	sbrs  mpr,    RXC1
-0000f7 cffc                      	rjmp  Rec2					;if it is not done then it loops until it is
-0000f8 9100 009c                 	lds   mpr,    UDR1			;loads the value into the memory buffer
-0000fa 930c                      	st    X,      mpr
-0000fb 9100 009b                 	lds   mpr,    UCSR1A
-0000fd 7f08                      	cbr   mpr,    RXC1			;sets the bit so it is cleared meaning it is not done receiving
-0000fe 9300 009b                 	sts   UCSR1A, mpr			
-000100 d008                      	rcall Commands				;calls command to see if which command was called
+0000ef 9100 009b                 	lds   mpr,    UCSR1A		;checks if the RXC1 bits which means it is done receive is done recieving
+0000f1 ff07                      	sbrs  mpr,    RXC1
+0000f2 cffc                      	rjmp  Rec2					;if it is not done then it loops until it is
+0000f3 9100 009c                 	lds   mpr,    UDR1			;loads the value into the memory buffer
+0000f5 930c                      	st    X,      mpr
+0000f6 9100 009b                 	lds   mpr,    UCSR1A
+0000f8 7f08                      	cbr   mpr,    RXC1			;sets the bit so it is cleared meaning it is not done receiving
+0000f9 9300 009b                 	sts   UCSR1A, mpr			
+0000fb d008                      	rcall Commands				;calls command to see if which command was called
                                  
                                  
                                  Skip:
-000101 e505                      	ldi mpr, 0b01010101			;if the wrong botID is received it checks if the freeze command was received
-000102 1503                      	cp mpr, r3
-000103 f409                      	brne Skip3					;if it was not received then it skips to Skip3
-000104 df8a                      	rcall GetFreezed
+0000fc e505                      	ldi mpr, 0b01010101			;if the wrong botID is received it checks if the freeze command was received
+0000fd 1503                      	cp mpr, r3
+0000fe f409                      	brne Skip3					;if it was not received then it skips to Skip3
+0000ff df8a                      	rcall GetFreezed
                                  
                                  Skip3:
-000105 9518                      	reti						;returns to main to wait again
+000100 9518                      	reti						;returns to main to wait again
                                  	
                                  ResetX:
-000106 e0a0                      	ldi XL, low(BUFFER)			;resets the X value to initial value that it was set to 
-000107 e0b1                      	ldi XH, high(BUFFER)
-000108 9508                      	ret
+000101 e0a0                      	ldi XL, low(BUFFER)			;resets the X value to initial value that it was set to 
+000102 e0b1                      	ldi XH, high(BUFFER)
+000103 9508                      	ret
                                  
                                  Commands:
                                  	
-000109 910c                      	ld mpr, x					;loads the value in the memory buffer
+000104 910c                      	ld mpr, x					;loads the value in the memory buffer
                                  
-00010a 3b00                      	cpi mpr, MovFwdC			;checks if the value means MovFwd command is called
-00010b f409                      	brne Bck					;if it is not then skips to check the next one
-00010c df64                      	rcall MoveForward			
+000105 3b00                      	cpi mpr, MovFwdC			;checks if the value means MovFwd command is called
+000106 f409                      	brne Bck					;if it is not then skips to check the next one
+000107 df64                      	rcall MoveForward			
                                  Bck:
-00010d 3800                      	cpi mpr, MovBckC			;checks if the value means MovBck command is called
-00010e f409                      	brne TrnR					;if it is not then skips to check the next one
-00010f df64                      	rcall MoveBackward			
+000108 3800                      	cpi mpr, MovBckC			;checks if the value means MovBck command is called
+000109 f409                      	brne TrnR					;if it is not then skips to check the next one
+00010a df64                      	rcall MoveBackward			
                                  
                                  TrnR:
-000110 3a00                      	cpi mpr, TurnRC				;checks if the value means TurnR command is called
-000111 f409                      	brne TrnL					;if it is not then skips to check the next one
-000112 df64                      	rcall TurnRight
+00010b 3a00                      	cpi mpr, TurnRC				;checks if the value means TurnR command is called
+00010c f409                      	brne TrnL					;if it is not then skips to check the next one
+00010d df64                      	rcall TurnRight
                                  
                                  TrnL:
-000113 3900                      	cpi mpr, TurnLC				;checks if the value means TurnL command is called
-000114 f409                      	brne Hlt					;if it is not then skips to check the next one
-000115 df64                      	rcall TurnLeft
+00010e 3900                      	cpi mpr, TurnLC				;checks if the value means TurnL command is called
+00010f f409                      	brne Hlt					;if it is not then skips to check the next one
+000110 df64                      	rcall TurnLeft
                                  Hlt:
-000116 3c08                      	cpi mpr, HaltC				;checks if the value means Halt command is called
-000117 f409                      	brne Fre					;if it is not then it skips to check the next one
-000118 df64                      	rcall Halt_Sub
+000111 3c08                      	cpi mpr, HaltC				;checks if the value means Halt command is called
+000112 f409                      	brne Fre					;if it is not then it skips to check the next one
+000113 df64                      	rcall Halt_Sub
                                  Fre:
-000119 3f08                      	cpi mpr, FreezeC			;checks if the value means Freeze command is called
-00011a f409                      	brne Skip2					;if it is not then it skips to check the next one
-00011b df81                      	rcall Freezer
+000114 3f08                      	cpi mpr, FreezeC			;checks if the value means Freeze command is called
+000115 f409                      	brne Skip2					;if it is not then it skips to check the next one
+000116 df81                      	rcall Freezer
                                  Skip2:
-00011c dfe9                      	rcall ResetX				;resets x to point to the memory buffer
-00011d 9508                      ret
+000117 dfe9                      	rcall ResetX				;resets x to point to the memory buffer
+000118 9508                      ret
                                  ;***********************************************************
                                  ;*	Stored Program Data
                                  ;***********************************************************
@@ -1698,12 +1693,12 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega128" register use summary:
-x  :   6 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   3 r4 :   0 
+x  :   4 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   3 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16: 110 r17:   0 r18:   4 r19:  13 r20:   4 
-r21:   4 r22:   3 r23:   0 r24:   0 r25:   0 r26:   2 r27:   2 r28:   1 
-r29:   1 r30:   0 r31:   0 
-Registers used: 12 out of 35 (34.3%)
+r13:   0 r14:   0 r15:   0 r16: 107 r17:   0 r18:   4 r19:  13 r20:   4 
+r21:   4 r22:   3 r23:   0 r24:   0 r25:   0 r26:   2 r27:   2 r28:   0 
+r29:   0 r30:   0 r31:   0 
+Registers used: 10 out of 35 (28.6%)
 
 "ATmega128" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
@@ -1716,14 +1711,14 @@ clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   2 cpc   :   0 
 cpi   :   7 cpse  :   0 dec   :   3 elpm  :   0 eor   :   0 fmul  :   0 
 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 in    :   3 inc   :   1 
-jmp   :   0 ld    :   2 ldd   :   0 ldi   :  51 lds   :   7 lpm   :   0 
+jmp   :   0 ld    :   2 ldd   :   0 ldi   :  48 lds   :   7 lpm   :   0 
 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 
 mulsu :   0 neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :  23 
 pop   :  10 push  :  10 rcall :  17 ret   :   9 reti  :   4 rjmp  :   9 
 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 
 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   3 sec   :   0 
 seh   :   0 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 
-sev   :   0 sez   :   0 sleep :   0 spm   :   0 st    :   4 std   :   0 
+sev   :   0 sez   :   0 sleep :   0 spm   :   0 st    :   2 std   :   0 
 sts   :  16 sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
 
 Instructions used: 22 out of 114 (19.3%)
@@ -1731,7 +1726,7 @@ Instructions used: 22 out of 114 (19.3%)
 "ATmega128" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00023c    440      0    440  131072   0.3%
+[.cseg] 0x000000 0x000232    430      0    430  131072   0.3%
 [.dseg] 0x000100 0x000104      0      4      4    4096   0.1%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 

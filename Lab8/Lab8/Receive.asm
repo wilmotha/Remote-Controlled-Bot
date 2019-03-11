@@ -2,14 +2,14 @@
 ;*
 ;*	Receive
 ;*
-;*	Enter the description of the program here
+;*	This Program is used to controll the movement of the 
 ;*
-;*	This is the RECEIVE skeleton file for Lab 8 of ECE 375
+;*	bot based on commands from the transmitter
 ;*
 ;***********************************************************
 ;*
 ;*	 Author: Austin Wilmoth and Donald Joyce
-;*	   Date: Enter Date
+;*	   Date: March 11, 2019
 ;*
 ;***********************************************************
 
@@ -132,11 +132,6 @@ INIT:
 	;Other
 	ldi XL, low(BUFFER)		;set up X and Y to point to the buffer which stores the value that is received
 	ldi XH, high(BUFFER)
-	ldi YL, low(BUFFER)
-	ldi YH, high(BUFFER)
-	ldi mpr, $00
-	st x+, mpr				;clears the value in the buffer
-	st x, mpr
 	rcall Resetx			;resets the value that x pointing to
 
 	
