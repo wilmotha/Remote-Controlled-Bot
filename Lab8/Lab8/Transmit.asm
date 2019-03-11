@@ -96,7 +96,7 @@ INIT:
 ;***********************************************************
 ;*	Main Program
 ;***********************************************************
-MAIN
+MAIN:
 	in mpr, PIND			; read in from the buttons
 	cpi mpr, 0b11111110		; check if the button 0 is pressed
 	brne Bck
