@@ -222,13 +222,16 @@ GetFreezed:
 Freezer:		;this function transmits the freeze value is tranmitted to the other bots
 	;ldi mpr, 0b11111111 ;remove this just for testing
 	;out PORTB, mpr
+	ldi mpr, (1<<RXCIE1)|(0<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+	sts UCSR1B, mpr
 
 	LDS mpr, UCSR1A			;loads the value UCSR1A into mpr
 	SBRS mpr, UDRE1			;checks if the UDRE1 bit says that the buffer is cleared
 	rjmp Freezer			;if it is not cleared then it keeps looping until the it is
 	ldi mpr, 0b01010101		;if the buffer is cleared then the command is loaded into UDR1 to be transmitted
 	STS UDR1, mpr			
-	
+
+
 	Loop_2:
 		LDS mpr, UCSR1A		;checks if the transmit is done 
 		SBRS mpr, TXC1
@@ -236,6 +239,9 @@ Freezer:		;this function transmits the freeze value is tranmitted to the other b
 		
 		cbr mpr, TXC1		;clears the transmit bit in UCSR1A
 		STS UCSR1A, mpr
+
+	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+	sts UCSR1B, mpr
 
 
 	ret
@@ -245,6 +251,9 @@ RightBump:
 		push	waitcnt			; Save wait register
 		in		mpr, SREG	; Save program state
 		push	mpr			;
+
+		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+		sts UCSR1B, mpr
 
 		; Move Backwards for a second
 		ldi		mpr, MovBck	; Load Move Backward command
@@ -265,6 +274,9 @@ RightBump:
 		ldi mpr, $FF
 		out EIFR, mpr
 
+		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+		sts UCSR1B, mpr
+
 		pop		mpr		; Restore program state
 		out		SREG, mpr	;
 		pop		waitcnt		; Restore wait register
@@ -276,6 +288,9 @@ LeftBump:
 		push	waitcnt			; Save wait register
 		in		mpr, SREG	; Save program state
 		push	mpr			;
+
+		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+		sts UCSR1B, mpr
 
 		; Move Backwards for a second
 		ldi		mpr, MovBck	; Load Move Backward command
@@ -295,6 +310,9 @@ LeftBump:
 		
 		ldi mpr, $FF
 		out EIFR, mpr
+
+		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
+		sts UCSR1B, mpr
 
 		pop		mpr		; Restore program state
 		out		SREG, mpr	;
