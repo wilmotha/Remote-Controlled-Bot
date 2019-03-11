@@ -26,6 +26,7 @@
 .def	waitcnt = r19			; Wait Loop Counter
 .def	ilcnt = r20				; Inner Loop Counter
 .def	olcnt = r21				; Outer Loop Counter
+.def	Fcount = r22			; counts how many times bot has been frozen 
 
 .equ	FTime = 255
 .equ	WTime = 100				; Time to wait in wait loop
@@ -101,10 +102,10 @@ INIT:
 	ldi mpr, $00	;sets Port b as output which lets the led be turned on
 	out PortB, mpr
 	
+	ldi Fcount, 0
 
 	;USART1
 		;Set baudrate at 2400bps
-	
 	ldi mpr, high(832)	;set the baud rate using the double baud rate equation
 	sts UBRR1H, mpr
 	ldi mpr, low(832)
@@ -118,16 +119,6 @@ INIT:
 
 	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)	;sets the 8 bit rate and 2 stop bits
 	sts UCSR1C, mpr
-
-	;ldi mpr, $A0
-	;sts UBRR1L, mpr
-	;ldi mpr, $01
-	;sts UBRR1H, mpr
-		;Enable receiver and enable receive interrupts
-	;ldi mpr, 0b10010000
-	;sts UCSR1C, mpr
-		;Set frame format: 8 data bits, 2 stop bits
-	;ldi mpr, 0b00001110
 	
 	;External Interrupts
 		;Set the External Interrupt Mask
@@ -216,7 +207,12 @@ GetFreezed:
 	push command
 	in command, PORTB
 	
+	inc Fcount
+
 	rcall Halt_sub
+
+	cpi Fcount, 3
+	breq FreezeForever
 
 	ldi	waitcnt, FTime	; Wait for 1 second
 	rcall Wait
@@ -228,9 +224,13 @@ GetFreezed:
 
 	ret
 
+FreezeForever:
+	rjmp FreezeForever
+
 Freezer:		;this function transmits the freeze value is tranmitted to the other bots
 	;ldi mpr, 0b11111111 ;remove this just for testing
 	;out PORTB, mpr
+
 	ldi mpr, (1<<RXCIE1)|(0<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 	sts UCSR1B, mpr
 
@@ -251,7 +251,6 @@ Freezer:		;this function transmits the freeze value is tranmitted to the other b
 
 	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 	sts UCSR1B, mpr
-
 
 	ret
 
@@ -366,8 +365,6 @@ Skip3:
 	reti						;returns to main to wait again
 	
 ResetX:
-	;mov XL, YL
-	;mov XH, XH
 	ldi XL, low(BUFFER)			;resets the X value to initial value that it was set to 
 	ldi XH, high(BUFFER)
 	ret
