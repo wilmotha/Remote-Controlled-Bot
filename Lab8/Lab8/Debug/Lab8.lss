@@ -1,17 +1,5 @@
 
-<<<<<<< HEAD
-AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm Sun Mar 10 15:06:42 2019
-=======
-<<<<<<< HEAD
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sun Mar 10 16:37:01 2019
-=======
-<<<<<<< HEAD
-AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Transmit.asm Sat Mar 09 19:02:05 2019
-=======
-AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Sat Mar 09 19:03:07 2019
->>>>>>> f0cd55046b063b37cbd895a1b17bc467726a589a
->>>>>>> aaeda2e75f450acc7b6d53dfd1641c0b0b85d15a
->>>>>>> d87a00bcb19a673029556e01cb928ffe30d46280
+AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm Sun Mar 10 16:56:28 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
 C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
@@ -1364,40 +1352,40 @@ C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm(16): Including file '
                                  ;***********************************************************
                                  INIT:
                                  	;Stack Pointer (VERY IMPORTANT!!!!)
-000046 e100                      	ldi mpr, high(RAMEND)
+000046 e100                      	ldi mpr, high(RAMEND)	
 000047 bf0e                      	out sph, mpr
 000048 ef0f                      	ldi mpr, low(RAMEND)
 000049 bf0d                      	out spl, mpr
                                  
                                  	;I/O Ports
-00004a e000                      	ldi mpr, (0<<PD0)|(0<<PD1)|(0<<PD2)
-00004b bb01                      	out DDRD, mpr
+00004a e000                      	ldi mpr, (0<<PD0)|(0<<PD1)|(0<<PD2)	;This sets up the buttons for input for the two interrupts and PD2 is for the Recieve interrupt for USART. 
+00004b bb01                      	out DDRD, mpr	;the value is loaded into DDRD to set the port as input
                                  
-00004c e003                      	ldi mpr, $03
+00004c e003                      	ldi mpr, $03	; This set the port for input
 00004d bb02                      	out PORTD, mpr
                                  
-00004e ef0f                      	ldi mpr, $FF
+00004e ef0f                      	ldi mpr, $FF	;Sets DDRB as output
 00004f bb07                      	out DDRB, mpr
                                  
-000050 e000                      	ldi mpr, $00
+000050 e000                      	ldi mpr, $00	;sets Port b as output which lets the led be turned on
 000051 bb08                      	out PortB, mpr
                                  	
                                  
                                  	;USART1
                                  		;Set baudrate at 2400bps
                                  	
-000052 e003                      	ldi mpr, high(832)
+000052 e003                      	ldi mpr, high(832)	;set the baud rate using the double baud rate equation
 000053 9300 0098                 	sts UBRR1H, mpr
 000055 e400                      	ldi mpr, low(832)
 000056 9300 0099                 	sts UBRR1L, mpr
                                  	
-000058 e002                      	ldi mpr, (1<<U2X1)
+000058 e002                      	ldi mpr, (1<<U2X1)	;sets the baud rate bit 
 000059 9300 009b                 	sts UCSR1A, mpr
                                  
-00005b e908                      	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)
+00005b e908                      	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 00005c 9300 009a                 	sts UCSR1B, mpr
                                  
-00005e e00e                      	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)
+00005e e00e                      	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)	;sets the 8 bit rate and 2 stop bits
 00005f 9300 009d                 	sts UCSR1C, mpr
                                  
                                  	;ldi mpr, $A0
@@ -1412,22 +1400,22 @@ C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm(16): Including file '
                                  	
                                  	;External Interrupts
                                  		;Set the External Interrupt Mask
-000061 e003                      	ldi mpr, 0b00000011
+000061 e003                      	ldi mpr, 0b00000011		;set up the two buttons as inputs or as bumpers
 000062 bf09                      	out EIMSK, mpr
                                  		;Set the Interrupt Sense Control to falling edge detection
-000063 e00a                      	ldi mpr, 0b00001010
+000063 e00a                      	ldi mpr, 0b00001010		;set up the two buttons interrupts as falling edge detection
 000064 9300 006a                 	sts EICRA, mpr
                                  
 000066 9478                      	sei
                                  	;Other
-000067 e0a0                      	ldi XL, low(BUFFER)
+000067 e0a0                      	ldi XL, low(BUFFER)		;set up X and Y to point to the buffer which stores the value that is received
 000068 e0b1                      	ldi XH, high(BUFFER)
 000069 e0c0                      	ldi YL, low(BUFFER)
 00006a e0d1                      	ldi YH, high(BUFFER)
 00006b e000                      	ldi mpr, $00
-00006c 930d                      	st x+, mpr
+00006c 930d                      	st x+, mpr				;clears the value in the buffer
 00006d 930c                      	st x, mpr
-00006e d07b                      	rcall Resetx
+00006e d07b                      	rcall Resetx			;resets the value that x pointing to
                                  
                                  	
                                  ;***********************************************************
@@ -1436,33 +1424,33 @@ C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm(16): Including file '
                                  MAIN:
                                  	
                                  
-00006f cfff                      	rjmp	MAIN
+00006f cfff                      	rjmp	MAIN			;infinity loops so that it waits for just the interrupts
                                  
                                  ;***********************************************************
                                  ;*	Functions and Subroutines
                                  ;***********************************************************
                                  MoveForward:
-000070 e600                      	ldi mpr, MovFwd
+000070 e600                      	ldi mpr, MovFwd			;loads the value of the command into port B
 000071 bb08                      	out PORTB, mpr
 000072 9508                      	ret
                                  
-                                 MoveBackward:
-000073 e000                      	ldi mpr, MovBck
+                                 MoveBackward:				
+000073 e000                      	ldi mpr, MovBck			;loads the value of the command into port B
 000074 bb08                      	out PORTB, mpr
 000075 9508                      	ret
                                  
                                  TurnRight:
-000076 e400                      	ldi mpr, TurnR
+000076 e400                      	ldi mpr, TurnR			;loads the value of the command into port B
 000077 bb08                      	out PORTB, mpr
 000078 9508                      	ret
                                  
                                  TurnLeft:
-000079 e200                      	ldi mpr, TurnL
+000079 e200                      	ldi mpr, TurnL			;loads the value of the command into port B
 00007a bb08                      	out PORTB, mpr
 00007b 9508                      	ret
                                  
                                  Halt_Sub:
-00007c e900                      	ldi mpr, Halt
+00007c e900                      	ldi mpr, Halt			;loads the value of the command into port B
 00007d bb08                      	out PORTB, mpr
 00007e 9508                      	ret
                                  
@@ -1500,22 +1488,22 @@ C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm(16): Including file '
 000091 dfed                      	rcall Wait
 000092 9508                      	ret
                                  
-                                 Freezer:
+                                 Freezer:		;this function transmits the freeze value is tranmitted to the other bots
                                  	;ldi mpr, 0b11111111 ;remove this just for testing
                                  	;out PORTB, mpr
                                  
-000093 9100 009b                 	LDS mpr, UCSR1A
-000095 ff05                      	SBRS mpr, UDRE1
-000096 cffc                      	rjmp Freezer
-000097 e505                      	ldi mpr, 0b01010101
-000098 9300 009c                 	STS UDR1, mpr
+000093 9100 009b                 	LDS mpr, UCSR1A			;loads the value UCSR1A into mpr
+000095 ff05                      	SBRS mpr, UDRE1			;checks if the UDRE1 bit says that the buffer is cleared
+000096 cffc                      	rjmp Freezer			;if it is not cleared then it keeps looping until the it is
+000097 e505                      	ldi mpr, 0b01010101		;if the buffer is cleared then the command is loaded into UDR1 to be transmitted
+000098 9300 009c                 	STS UDR1, mpr			
                                  	
                                  	Loop_2:
-00009a 9100 009b                 		LDS mpr, UCSR1A
+00009a 9100 009b                 		LDS mpr, UCSR1A		;checks if the transmit is done 
 00009c ff06                      		SBRS mpr, TXC1
-00009d cffc                      		rjmp Loop_2
+00009d cffc                      		rjmp Loop_2			; if the transmit is not done then it loops until it is
                                  		
-00009e 7f09                      		cbr mpr, TXC1
+00009e 7f09                      		cbr mpr, TXC1		;clears the transmit bit in UCSR1A
 00009f 9300 009b                 		STS UCSR1A, mpr
                                  
                                  
@@ -1585,85 +1573,85 @@ C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm(16): Including file '
                                  
                                  Receive:
                                  
-0000cc 9100 009c                 	lds mpr, UDR1
+0000cc 9100 009c                 	lds mpr, UDR1		;loads the received value into the buffer
 0000ce 930c                      	st X, mpr
                                  	
-0000cf 9100 009b                 	lds mpr, UCSR1A
+0000cf 9100 009b                 	lds mpr, UCSR1A		;clears the receive done bit in UCSR1A
 0000d1 7f08                      	cbr mpr, RXC1
 0000d2 9300 009b                 	STS UCSR1A, mpr
                                  	
-0000d4 903c                      	ld r3, X
+0000d4 903c                      	ld r3, X			;checks if the botID is correct one
 0000d5 e40d                      	ldi mpr, BotAddress
                                  
-0000d6 1503                      	cp mpr, r3
+0000d6 1503                      	cp mpr, r3			;if the other botID is not correct it jumps to Skip
 0000d7 f469                      	brne Skip
                                  	
                                  Rec2:	
-0000d8 9100 009b                 	lds   mpr,    UCSR1A
+0000d8 9100 009b                 	lds   mpr,    UCSR1A		;checks if the RXC1 bits which means it is done receive is done recieving
 0000da ff07                      	sbrs  mpr,    RXC1
-0000db cffc                      	rjmp  Rec2
-0000dc 9100 009c                 	lds   mpr,    UDR1
+0000db cffc                      	rjmp  Rec2					;if it is not done then it loops until it is
+0000dc 9100 009c                 	lds   mpr,    UDR1			;loads the value into the memory buffer
 0000de 930c                      	st    X,      mpr
 0000df 9100 009b                 	lds   mpr,    UCSR1A
-0000e1 7f08                      	cbr   mpr,    RXC1
-0000e2 9300 009b                 	sts   UCSR1A, mpr
-0000e4 d008                      	rcall Commands
+0000e1 7f08                      	cbr   mpr,    RXC1			;sets the bit so it is cleared meaning it is not done receiving
+0000e2 9300 009b                 	sts   UCSR1A, mpr			
+0000e4 d008                      	rcall Commands				;calls command to see if which command was called
                                  
                                  
                                  Skip:
-0000e5 e505                      	ldi mpr, 0b01010101
+0000e5 e505                      	ldi mpr, 0b01010101			;if the wrong botID is received it checks if the freeze command was received
 0000e6 1503                      	cp mpr, r3
-0000e7 f409                      	brne Skip3
+0000e7 f409                      	brne Skip3					;if it was not received then it skips to Skip3
 0000e8 dfa5                      	rcall GetFreezed
                                  
                                  Skip3:
-0000e9 9518                      	reti
+0000e9 9518                      	reti						;returns to main to wait again
                                  	
                                  ResetX:
                                  	;mov XL, YL
                                  	;mov XH, XH
-0000ea e0a0                      	ldi XL, low(BUFFER)
+0000ea e0a0                      	ldi XL, low(BUFFER)			;resets the X value to initial value that it was set to 
 0000eb e0b1                      	ldi XH, high(BUFFER)
 0000ec 9508                      	ret
                                  
                                  Commands:
                                  	
-0000ed 910c                      	ld mpr, x
+0000ed 910c                      	ld mpr, x					;loads the value in the memory buffer
                                  
-0000ee 3b00                      	cpi mpr, MovFwdC
-0000ef f409                      	brne Bck
-0000f0 df7f                      	rcall MoveForward
+0000ee 3b00                      	cpi mpr, MovFwdC			;checks if the value means MovFwd command is called
+0000ef f409                      	brne Bck					;if it is not then skips to check the next one
+0000f0 df7f                      	rcall MoveForward			
                                  Bck:
-0000f1 3800                      	cpi mpr, MovBckC
-0000f2 f409                      	brne TrnR
-0000f3 df7f                      	rcall MoveBackward
+0000f1 3800                      	cpi mpr, MovBckC			;checks if the value means MovBck command is called
+0000f2 f409                      	brne TrnR					;if it is not then skips to check the next one
+0000f3 df7f                      	rcall MoveBackward			
                                  
                                  TrnR:
-0000f4 3a00                      	cpi mpr, TurnRC
-0000f5 f409                      	brne TrnL
+0000f4 3a00                      	cpi mpr, TurnRC				;checks if the value means TurnR command is called
+0000f5 f409                      	brne TrnL					;if it is not then skips to check the next one
 0000f6 df7f                      	rcall TurnRight
                                  
                                  TrnL:
-0000f7 3900                      	cpi mpr, TurnLC
-0000f8 f409                      	brne Hlt
+0000f7 3900                      	cpi mpr, TurnLC				;checks if the value means TurnL command is called
+0000f8 f409                      	brne Hlt					;if it is not then skips to check the next one
 0000f9 df7f                      	rcall TurnLeft
                                  Hlt:
-0000fa 3c08                      	cpi mpr, HaltC
-0000fb f409                      	brne Fre
+0000fa 3c08                      	cpi mpr, HaltC				;checks if the value means Halt command is called
+0000fb f409                      	brne Fre					;if it is not then it skips to check the next one
 0000fc df7f                      	rcall Halt_Sub
                                  Fre:
-0000fd 3f08                      	cpi mpr, FreezeC
-0000fe f409                      	brne Skip2
+0000fd 3f08                      	cpi mpr, FreezeC			;checks if the value means Freeze command is called
+0000fe f409                      	brne Skip2					;if it is not then it skips to check the next one
 0000ff df93                      	rcall Freezer
                                  Skip2:
-000100 dfe9                      	rcall ResetX
+000100 dfe9                      	rcall ResetX				;resets x to point to the memory buffer
 000101 9508                      ret
                                  ;***********************************************************
                                  ;*	Stored Program Data
                                  ;***********************************************************
                                  .dseg
                                  .org $0100
-                                 BUFFER:
+                                 BUFFER:							;memory buffer
 000100                           .byte	4
                                  
                                  ;***********************************************************
