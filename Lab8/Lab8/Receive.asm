@@ -83,40 +83,40 @@
 ;***********************************************************
 INIT:
 	;Stack Pointer (VERY IMPORTANT!!!!)
-	ldi mpr, high(RAMEND)
+	ldi mpr, high(RAMEND)	
 	out sph, mpr
 	ldi mpr, low(RAMEND)
 	out spl, mpr
 
 	;I/O Ports
-	ldi mpr, (0<<PD0)|(0<<PD1)|(0<<PD2)
-	out DDRD, mpr
+	ldi mpr, (0<<PD0)|(0<<PD1)|(0<<PD2)	;This sets up the buttons for input for the two interrupts and PD2 is for the Recieve interrupt for USART. 
+	out DDRD, mpr	;the value is loaded into DDRD to set the port as input
 
-	ldi mpr, $03
+	ldi mpr, $03	; This set the port for input
 	out PORTD, mpr
 
-	ldi mpr, $FF
+	ldi mpr, $FF	;Sets DDRB as output
 	out DDRB, mpr
 
-	ldi mpr, $00
+	ldi mpr, $00	;sets Port b as output which lets the led be turned on
 	out PortB, mpr
 	
 
 	;USART1
 		;Set baudrate at 2400bps
 	
-	ldi mpr, high(832)
+	ldi mpr, high(832)	;set the baud rate using the double baud rate equation
 	sts UBRR1H, mpr
 	ldi mpr, low(832)
 	sts UBRR1L, mpr
 	
-	ldi mpr, (1<<U2X1)
+	ldi mpr, (1<<U2X1)	;sets the baud rate bit 
 	sts UCSR1A, mpr
 
-	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)
+	ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 	sts UCSR1B, mpr
 
-	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)
+	ldi mpr, (1<<USBS1)|(1<<UCSZ11)|(1<<UCSZ10)	;sets the 8 bit rate and 2 stop bits
 	sts UCSR1C, mpr
 
 	;ldi mpr, $A0
@@ -131,22 +131,22 @@ INIT:
 	
 	;External Interrupts
 		;Set the External Interrupt Mask
-	ldi mpr, 0b00000011
+	ldi mpr, 0b00000011		;set up the two buttons as inputs or as bumpers
 	out EIMSK, mpr
 		;Set the Interrupt Sense Control to falling edge detection
-	ldi mpr, 0b00001010
+	ldi mpr, 0b00001010		;set up the two buttons interrupts as falling edge detection
 	sts EICRA, mpr
 
 	sei
 	;Other
-	ldi XL, low(BUFFER)
+	ldi XL, low(BUFFER)		;set up X and Y to point to the buffer which stores the value that is received
 	ldi XH, high(BUFFER)
 	ldi YL, low(BUFFER)
 	ldi YH, high(BUFFER)
 	ldi mpr, $00
-	st x+, mpr
+	st x+, mpr				;clears the value in the buffer
 	st x, mpr
-	rcall Resetx
+	rcall Resetx			;resets the value that x pointing to
 
 	
 ;***********************************************************
@@ -155,33 +155,33 @@ INIT:
 MAIN:
 	
 
-	rjmp	MAIN
+	rjmp	MAIN			;infinity loops so that it waits for just the interrupts
 
 ;***********************************************************
 ;*	Functions and Subroutines
 ;***********************************************************
 MoveForward:
-	ldi mpr, MovFwd
+	ldi mpr, MovFwd			;loads the value of the command into port B
 	out PORTB, mpr
 	ret
 
-MoveBackward:
-	ldi mpr, MovBck
+MoveBackward:				
+	ldi mpr, MovBck			;loads the value of the command into port B
 	out PORTB, mpr
 	ret
 
 TurnRight:
-	ldi mpr, TurnR
+	ldi mpr, TurnR			;loads the value of the command into port B
 	out PORTB, mpr
 	ret
 
 TurnLeft:
-	ldi mpr, TurnL
+	ldi mpr, TurnL			;loads the value of the command into port B
 	out PORTB, mpr
 	ret
 
 Halt_Sub:
-	ldi mpr, Halt
+	ldi mpr, Halt			;loads the value of the command into port B
 	out PORTB, mpr
 	ret
 
@@ -219,22 +219,22 @@ GetFreezed:
 	rcall Wait
 	ret
 
-Freezer:
+Freezer:		;this function transmits the freeze value is tranmitted to the other bots
 	;ldi mpr, 0b11111111 ;remove this just for testing
 	;out PORTB, mpr
 
-	LDS mpr, UCSR1A
-	SBRS mpr, UDRE1
-	rjmp Freezer
-	ldi mpr, 0b01010101
-	STS UDR1, mpr
+	LDS mpr, UCSR1A			;loads the value UCSR1A into mpr
+	SBRS mpr, UDRE1			;checks if the UDRE1 bit says that the buffer is cleared
+	rjmp Freezer			;if it is not cleared then it keeps looping until the it is
+	ldi mpr, 0b01010101		;if the buffer is cleared then the command is loaded into UDR1 to be transmitted
+	STS UDR1, mpr			
 	
 	Loop_2:
-		LDS mpr, UCSR1A
+		LDS mpr, UCSR1A		;checks if the transmit is done 
 		SBRS mpr, TXC1
-		rjmp Loop_2
+		rjmp Loop_2			; if the transmit is not done then it loops until it is
 		
-		cbr mpr, TXC1
+		cbr mpr, TXC1		;clears the transmit bit in UCSR1A
 		STS UCSR1A, mpr
 
 
@@ -304,85 +304,85 @@ LeftBump:
 
 Receive:
 
-	lds mpr, UDR1
+	lds mpr, UDR1		;loads the received value into the buffer
 	st X, mpr
 	
-	lds mpr, UCSR1A
+	lds mpr, UCSR1A		;clears the receive done bit in UCSR1A
 	cbr mpr, RXC1
 	STS UCSR1A, mpr
 	
-	ld r3, X
+	ld r3, X			;checks if the botID is correct one
 	ldi mpr, BotAddress
 
-	cp mpr, r3
+	cp mpr, r3			;if the other botID is not correct it jumps to Skip
 	brne Skip
 	
 Rec2:	
-	lds   mpr,    UCSR1A
+	lds   mpr,    UCSR1A		;checks if the RXC1 bits which means it is done receive is done recieving
 	sbrs  mpr,    RXC1
-	rjmp  Rec2
-	lds   mpr,    UDR1
+	rjmp  Rec2					;if it is not done then it loops until it is
+	lds   mpr,    UDR1			;loads the value into the memory buffer
 	st    X,      mpr
 	lds   mpr,    UCSR1A
-	cbr   mpr,    RXC1
-	sts   UCSR1A, mpr
-	rcall Commands
+	cbr   mpr,    RXC1			;sets the bit so it is cleared meaning it is not done receiving
+	sts   UCSR1A, mpr			
+	rcall Commands				;calls command to see if which command was called
 
 
 Skip:
-	ldi mpr, 0b01010101
+	ldi mpr, 0b01010101			;if the wrong botID is received it checks if the freeze command was received
 	cp mpr, r3
-	brne Skip3
+	brne Skip3					;if it was not received then it skips to Skip3
 	rcall GetFreezed
 
 Skip3:
-	reti
+	reti						;returns to main to wait again
 	
 ResetX:
 	;mov XL, YL
 	;mov XH, XH
-	ldi XL, low(BUFFER)
+	ldi XL, low(BUFFER)			;resets the X value to initial value that it was set to 
 	ldi XH, high(BUFFER)
 	ret
 
 Commands:
 	
-	ld mpr, x
+	ld mpr, x					;loads the value in the memory buffer
 
-	cpi mpr, MovFwdC
-	brne Bck
-	rcall MoveForward
+	cpi mpr, MovFwdC			;checks if the value means MovFwd command is called
+	brne Bck					;if it is not then skips to check the next one
+	rcall MoveForward			
 Bck:
-	cpi mpr, MovBckC
-	brne TrnR
-	rcall MoveBackward
+	cpi mpr, MovBckC			;checks if the value means MovBck command is called
+	brne TrnR					;if it is not then skips to check the next one
+	rcall MoveBackward			
 
 TrnR:
-	cpi mpr, TurnRC
-	brne TrnL
+	cpi mpr, TurnRC				;checks if the value means TurnR command is called
+	brne TrnL					;if it is not then skips to check the next one
 	rcall TurnRight
 
 TrnL:
-	cpi mpr, TurnLC
-	brne Hlt
+	cpi mpr, TurnLC				;checks if the value means TurnL command is called
+	brne Hlt					;if it is not then skips to check the next one
 	rcall TurnLeft
 Hlt:
-	cpi mpr, HaltC
-	brne Fre
+	cpi mpr, HaltC				;checks if the value means Halt command is called
+	brne Fre					;if it is not then it skips to check the next one
 	rcall Halt_Sub
 Fre:
-	cpi mpr, FreezeC
-	brne Skip2
+	cpi mpr, FreezeC			;checks if the value means Freeze command is called
+	brne Skip2					;if it is not then it skips to check the next one
 	rcall Freezer
 Skip2:
-	rcall ResetX
+	rcall ResetX				;resets x to point to the memory buffer
 ret
 ;***********************************************************
 ;*	Stored Program Data
 ;***********************************************************
 .dseg
 .org $0100
-BUFFER:
+BUFFER:							;memory buffer
 .byte	4
 
 ;***********************************************************
