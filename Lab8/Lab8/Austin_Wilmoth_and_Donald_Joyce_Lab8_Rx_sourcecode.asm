@@ -38,7 +38,7 @@
 .equ	EngDirR = 5				; Right Engine Direction Bit
 .equ	EngDirL = 6				; Left Engine Direction Bit
 
-.equ	BotAddress = $4A;(Enter your robot's address here (8 bits))
+.equ	BotAddress = $4D;(Enter your robot's address here (8 bits))
 
 ;/////////////////////////////////////////////////////////////
 ;These macros are the values to make the TekBot Move.
@@ -255,9 +255,6 @@ RightBump:
 		in		mpr, SREG	; Save program state
 		push	mpr			;
 
-		push command
-		in command, PORTB
-
 		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 		sts UCSR1B, mpr
 
@@ -283,10 +280,6 @@ RightBump:
 		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 		sts UCSR1B, mpr
 
-		out PORTB, command
-		pop command
-
-	
 		pop		mpr		; Restore program state
 		out		SREG, mpr	;
 		pop		waitcnt		; Restore wait register
@@ -298,9 +291,6 @@ LeftBump:
 		push	waitcnt			; Save wait register
 		in		mpr, SREG	; Save program state
 		push	mpr			;
-
-		push command
-		in command, PORTB
 
 		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 		sts UCSR1B, mpr
@@ -326,10 +316,6 @@ LeftBump:
 
 		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 		sts UCSR1B, mpr
-
-		out PORTB, command
-		pop command
-
 
 		pop		mpr		; Restore program state
 		out		SREG, mpr	;

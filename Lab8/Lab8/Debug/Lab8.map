@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm Mon Mar 11 16:48:11 2019
+=======
+AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Mon Mar 11 16:56:21 2019
+>>>>>>> bd8129eacc4af833161fd9910aea5fd6b25f1be6
 
 
 EQU  SIGNATURE_000 0000001e
@@ -895,11 +899,11 @@ EQU  TurnLC       00000090
 EQU  HaltC        000000c8
 EQU  FreezeC      000000f8
 CSEG INIT         00000046
-CSEG LeftBump     000000c8
+CSEG LeftBump     000000cc
 CSEG RightBump    000000ad
-CSEG Receive      000000e3
+CSEG Receive      000000eb
 DSEG BUFFER       00000100
-CSEG Resetx       00000101
+CSEG Resetx       00000109
 CSEG MAIN         0000006b
 CSEG MoveForward  0000006c
 CSEG MoveBackward 0000006f
@@ -914,13 +918,13 @@ CSEG GetFreezed   0000008a
 CSEG FreezeForever 00000097
 CSEG Freezer      00000098
 CSEG Loop_2       000000a2
-CSEG Skip         000000fc
-CSEG Rec2         000000ef
-CSEG Commands     00000104
-CSEG Skip3        00000100
-CSEG Bck          00000108
-CSEG TrnR         0000010b
-CSEG TrnL         0000010e
-CSEG Hlt          00000111
-CSEG Fre          00000114
-CSEG Skip2        00000117
+CSEG Skip         00000104
+CSEG Rec2         000000f7
+CSEG Commands     0000010c
+CSEG Skip3        00000108
+CSEG Bck          00000110
+CSEG TrnR         00000113
+CSEG TrnL         00000116
+CSEG Hlt          00000119
+CSEG Fre          0000011c
+CSEG Skip2        0000011f
