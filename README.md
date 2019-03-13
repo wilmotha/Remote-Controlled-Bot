@@ -1,2 +1,2 @@
-# Lab8
-Transmit and receive data using USART
+# Remote Controlled Bot
+Transmit commands to bot using USART
