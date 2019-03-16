@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
+AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm Mon Mar 11 16:48:11 2019
+=======
 AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Mon Mar 11 16:56:21 2019
+>>>>>>> bd8129eacc4af833161fd9910aea5fd6b25f1be6
 
 
 EQU  SIGNATURE_000 0000001e
@@ -882,7 +886,7 @@ EQU  EngEnR       00000004
 EQU  EngEnL       00000007
 EQU  EngDirR      00000005
 EQU  EngDirL      00000006
-EQU  BotAddress   0000004d
+EQU  BotAddress   0000004a
 EQU  MovFwd       00000060
 EQU  MovBck       00000000
 EQU  TurnR        00000040

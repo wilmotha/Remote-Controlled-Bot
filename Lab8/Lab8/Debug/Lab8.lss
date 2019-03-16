@@ -1,10 +1,14 @@
 
+<<<<<<< HEAD
+AVRASM ver. 2.2.7  C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm Mon Mar 11 16:48:11 2019
+=======
 AVRASM ver. 2.2.7  C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm Mon Mar 11 16:56:21 2019
+>>>>>>> bd8129eacc4af833161fd9910aea5fd6b25f1be6
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
-C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
+C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
-C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Assembly Language Programming\Lab\Lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
+C:\Users\HAL\Documents\assembly\lab8\Lab8\Lab8\Receive.asm(16): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m128def.inc'
                                  
                                  ;***********************************************************
                                  
@@ -1307,7 +1311,7 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
                                  .equ	EngDirR = 5				; Right Engine Direction Bit
                                  .equ	EngDirL = 6				; Left Engine Direction Bit
                                  
-                                 .equ	BotAddress = $4D;(Enter your robot's address here (8 bits))
+                                 .equ	BotAddress = $4A;(Enter your robot's address here (8 bits))
                                  
                                  ;/////////////////////////////////////////////////////////////
                                  ;These macros are the values to make the TekBot Move.
@@ -1615,8 +1619,13 @@ C:\Users\austi\OneDrive\Documents\Classes\ECE375 - Computer Organization and Ass
 0000f0 7f08                      	cbr mpr, RXC1
 0000f1 9300 009b                 	STS UCSR1A, mpr
                                  	
+<<<<<<< HEAD
+0000eb 903c                      	ld r3, X			;checks if the botID is correct one
+0000ec e40a                      	ldi mpr, BotAddress
+=======
 0000f3 903c                      	ld r3, X			;checks if the botID is correct one
 0000f4 e40d                      	ldi mpr, BotAddress
+>>>>>>> bd8129eacc4af833161fd9910aea5fd6b25f1be6
                                  
 0000f5 1503                      	cp mpr, r3			;if the other botID is not correct it jumps to Skip
 0000f6 f469                      	brne Skip
