@@ -76,8 +76,7 @@
 ;- USART receive
 .org	$003C
 		rjmp	Receive
-		; some subroutine?
-.org	$0046					; End of Interrupt Vectors
+.org	$0046				; End of Interrupt Vectors
 		;rjmp	Receive
 ;***********************************************************
 ;*	Program Initialization
@@ -91,7 +90,7 @@ INIT:
 
 	;I/O Ports
 	ldi mpr, (0<<PD0)|(0<<PD1)|(0<<PD2)	;This sets up the buttons for input for the two interrupts and PD2 is for the Recieve interrupt for USART. 
-	out DDRD, mpr	;the value is loaded into DDRD to set the port as input
+	out DDRD, mpr						;the value is loaded into DDRD to set the port as input
 
 	ldi mpr, $03	; This set the port for input
 	out PORTD, mpr
@@ -121,16 +120,16 @@ INIT:
 	sts UCSR1C, mpr
 	
 	;External Interrupts
-		;Set the External Interrupt Mask
+	;Set the External Interrupt Mask
 	ldi mpr, 0b00000011		;set up the two buttons as inputs or as bumpers
 	out EIMSK, mpr
-		;Set the Interrupt Sense Control to falling edge detection
+	;Set the Interrupt Sense Control to falling edge detection
 	ldi mpr, 0b00001010		;set up the two buttons interrupts as falling edge detection
 	sts EICRA, mpr
 
 	sei
 	;Other
-	ldi XL, low(BUFFER)		;set up X and Y to point to the buffer which stores the value that is received
+	ldi XL, low(BUFFER)		;set up X to point to the buffer which stores the value that is received
 	ldi XH, high(BUFFER)
 	rcall Resetx			;resets the value that x pointing to
 
@@ -146,26 +145,46 @@ MAIN:
 ;***********************************************************
 ;*	Functions and Subroutines
 ;***********************************************************
+;----------------------------------------------------------------
+; Sub: MoveForward
+; Desc: This sets the bot to move forward
+;----------------------------------------------------------------
 MoveForward:
 	ldi mpr, MovFwd			;loads the value of the command into port B
 	out PORTB, mpr
 	ret
 
+;----------------------------------------------------------------
+; Sub: MoveBackward
+; Desc: This sets the bot to move backwards
+;----------------------------------------------------------------
 MoveBackward:				
 	ldi mpr, MovBck			;loads the value of the command into port B
 	out PORTB, mpr
 	ret
 
+;----------------------------------------------------------------
+; Sub: TurnRight
+; Desc: This sets the bot to turn right
+;----------------------------------------------------------------
 TurnRight:
 	ldi mpr, TurnR			;loads the value of the command into port B
 	out PORTB, mpr
 	ret
 
+;----------------------------------------------------------------
+; Sub: TurnLeft
+; Desc: This sets the bot to turn left
+;----------------------------------------------------------------
 TurnLeft:
 	ldi mpr, TurnL			;loads the value of the command into port B
 	out PORTB, mpr
 	ret
 
+;----------------------------------------------------------------
+; Sub: Halt_Sub
+; Desc: This sets the bot to stop moving
+;----------------------------------------------------------------
 Halt_Sub:
 	ldi mpr, Halt			;loads the value of the command into port B
 	out PORTB, mpr
@@ -188,43 +207,56 @@ Loop:	ldi		olcnt, 224		; load olcnt register
 OLoop:	ldi		ilcnt, 237		; load ilcnt register
 ILoop:	dec		ilcnt			; decrement ilcnt
 		brne	ILoop			; Continue Inner Loop
-		dec		olcnt		; decrement olcnt
+		dec		olcnt			; decrement olcnt
 		brne	OLoop			; Continue Outer Loop
-		dec		waitcnt		; Decrement wait 
+		dec		waitcnt			; Decrement wait 
 		brne	Loop			; Continue Wait loop	
 
-		pop		olcnt		; Restore olcnt register
-		pop		ilcnt		; Restore ilcnt register
-		pop		waitcnt		; Restore wait register
-		reti				; Return from subroutine
+		pop		olcnt			; Restore olcnt register
+		pop		ilcnt			; Restore ilcnt register
+		pop		waitcnt			; Restore wait register
+		reti					; Return from subroutine
 
+;----------------------------------------------------------------
+; Sub: GetFreezed
+; Desc: This halts the bot for 5 seconds when reciveing the 
+;       freeze command from another bot, and then returns to 
+;		the action it was performing afterwards. If hit by the
+;		freeze command 3 times it will halt tell reset.
+;----------------------------------------------------------------
 GetFreezed:
-	push command
+	push command		; store previous action
 	in command, PORTB
 	
 	inc Fcount
 
 	rcall Halt_sub
 
-	cpi Fcount, 3
-	breq FreezeForever
+	cpi Fcount, 3		; check how many times the bot has been 
+	breq FreezeForever	; frozen, if so jump to FreezeForever
 
-	ldi	waitcnt, FTime	; Wait for 1 second
+	ldi	waitcnt, FTime	; Wait for 2.5 second
 	rcall Wait
-	ldi	waitcnt, FTime
+	ldi	waitcnt, FTime	; Wait another 2.5 seconds
 	rcall Wait
 
-	out PORTB, command
+	out PORTB, command	; restore previous action
 	pop command
 
 	ret
 
+;----------------------------------------------------------------
+; Sub: FreezeForever
+; Desc: This sets the bot to halt until reset
+;----------------------------------------------------------------
 FreezeForever:
 	rjmp FreezeForever
 
-Freezer:		;this function transmits the freeze value is tranmitted to the other bots
-	;ldi mpr, 0b11111111 ;remove this just for testing
-	;out PORTB, mpr
+;----------------------------------------------------------------
+; Sub: Freezer
+; Desc: Transmits the freeze value to all other bots in range
+;----------------------------------------------------------------
+Freezer:		
 
 	ldi mpr, (1<<RXCIE1)|(0<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 	sts UCSR1B, mpr
@@ -249,13 +281,18 @@ Freezer:		;this function transmits the freeze value is tranmitted to the other b
 
 	ret
 
+;----------------------------------------------------------------
+; Sub:	RightBump
+; Desc:	Handles functionality of the TekBot when the right whisker
+;		is triggered.
+;----------------------------------------------------------------
 RightBump:
 		push	mpr			; Save mpr register
 		push	waitcnt			; Save wait register
 		in		mpr, SREG	; Save program state
 		push	mpr			;
 
-		push command
+		push command		; Stores the previous action
 		in command, PORTB
 
 		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
@@ -283,37 +320,42 @@ RightBump:
 		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 		sts UCSR1B, mpr
 
-		out PORTB, command
+		out PORTB, command	; restore previous action
 		pop command
 
 	
-		pop		mpr		; Restore program state
+		pop		mpr			; Restore program state
 		out		SREG, mpr	;
 		pop		waitcnt		; Restore wait register
-		pop		mpr		; Restore mpr
+		pop		mpr			; Restore mpr
 	reti
 
+;----------------------------------------------------------------
+; Sub:	LeftBump
+; Desc:	Handles functionality of the TekBot when the left whisker
+;		is triggered.
+;----------------------------------------------------------------
 LeftBump:
 		push	mpr			; Save mpr register
-		push	waitcnt			; Save wait register
+		push	waitcnt		; Save wait register
 		in		mpr, SREG	; Save program state
 		push	mpr			;
 
-		push command
+		push command		; store previous action
 		in command, PORTB
 
 		ldi mpr, (0<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 		sts UCSR1B, mpr
 
 		; Move Backwards for a second
-		ldi		mpr, MovBck	; Load Move Backward command
-		out		PORTB, mpr	; Send command to port
+		ldi		mpr, MovBck		; Load Move Backward command
+		out		PORTB, mpr		; Send command to port
 		ldi		waitcnt, WTime	; Wait for 1 second
 		rcall	Wait			; Call wait function
 
 		; Turn right for a second
-		ldi		mpr, TurnR	; Load Turn Left Command
-		out		PORTB, mpr	; Send command to port
+		ldi		mpr, TurnR		; Load Turn Left Command
+		out		PORTB, mpr		; Send command to port
 		ldi		waitcnt, WTime	; Wait for 1 second
 		rcall	Wait			; Call wait function
 
@@ -327,18 +369,21 @@ LeftBump:
 		ldi mpr, (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1)	;sets the Receive enable and transmit enable and receive interrupt enable
 		sts UCSR1B, mpr
 
-		out PORTB, command
+		out PORTB, command	; Restore pevious action
 		pop command
 
 
-		pop		mpr		; Restore program state
+		pop		mpr			; Restore program state
 		out		SREG, mpr	;
 		pop		waitcnt		; Restore wait register
-		pop		mpr		; Restore mpr
+		pop		mpr			; Restore mpr
 		reti
 
+;----------------------------------------------------------------
+; Sub: Recive
+; Desc: Recives command from the transmiter
+;----------------------------------------------------------------
 Receive:
-
 	lds mpr, UDR1		;loads the received value into the buffer
 	st X, mpr
 	
@@ -363,7 +408,6 @@ Rec2:
 	sts   UCSR1A, mpr			
 	rcall Commands				;calls command to see if which command was called
 
-
 Skip:
 	ldi mpr, 0b01010101			;if the wrong botID is received it checks if the freeze command was received
 	cp mpr, r3
@@ -372,14 +416,22 @@ Skip:
 
 Skip3:
 	reti						;returns to main to wait again
-	
+
+;----------------------------------------------------------------
+; Sub: ResetX
+; Desc: Resets the address that the X pointer points to
+;----------------------------------------------------------------	
 ResetX:
 	ldi XL, low(BUFFER)			;resets the X value to initial value that it was set to 
 	ldi XH, high(BUFFER)
 	ret
 
+;----------------------------------------------------------------
+; Sub: Commands
+; Desc: Checks which command was recived and calls the subroutine
+;		for that specific action
+;----------------------------------------------------------------
 Commands:
-	
 	ld mpr, x					;loads the value in the memory buffer
 
 	cpi mpr, MovFwdC			;checks if the value means MovFwd command is called
@@ -410,6 +462,7 @@ Fre:
 Skip2:
 	rcall ResetX				;resets x to point to the memory buffer
 ret
+
 ;***********************************************************
 ;*	Stored Program Data
 ;***********************************************************
